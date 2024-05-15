@@ -521,7 +521,7 @@ function get_posts($posts, $page = 1, $perpage = 0)
             $bc[] = '<span><a href="' . $a[1] . '">' . $a[0] . '</a></span>';
         }
 
-        $post->tag = implode(' ', $url);
+        $post->tag = implode(', ', $url);
 
         $post->tagb = implode(' » ', $bc);
 
@@ -1945,9 +1945,15 @@ function tag_cloud($custom = null)
                 arsort($tag_collection);
                 $sliced_tags = array_slice($tag_collection, 0, $tagcloud_count, true);
                 ksort($sliced_tags);
+				$i = 0;
+				$i_max = count($sliced_tags);
+				$comma = ', ';
                 foreach ($sliced_tags as $tag => $count) {
+					$i++;
+					if ($i == $i_max) { $comma = ''; }
+
                     $size = $min_size + (($count - $min_qty) * $step);
-                    $wrapper .= ' <a class="tag-cloud-link" href="'. site_url(). 'tag/'. $tag .'" style="font-size:'. $size .'pt;">'.tag_i18n($tag).'</a> ';
+                    $wrapper .= ' <a class="tag-cloud-link" href="'. site_url(). 'tag/'. $tag .'">'.tag_i18n($tag).'</a>' .$comma;
                 }
                 $ar = serialize($wrapper);
                 file_put_contents($cache_t, $ar, LOCK_EX);                    
@@ -2445,12 +2451,12 @@ function social($class = null)
 function copyright()
 {
     $blogcp = blog_copyright();
-    $credit = 'Powered by <a href="http://www.htmly.com" target="_blank" rel="nofollow">HTMLy</a>';
+    $credit = 'В основу движка сайта положен <a href="http://www.htmly.com" target="_blank" rel="nofollow">HTMLy</a>.';
 
     if (!empty($blogcp)) {
-        return $copyright = '<span class="copyright">' . $blogcp . '</span> <span class="credit">' . $credit . '</span>';
+        return $copyright = '' . $blogcp . '<br>' . $credit . '';
     } else {
-        return $credit = '<span class="credit">' . $credit . '</span>';
+        return $credit = '' . $credit . '';
     }
 }
 
@@ -2588,7 +2594,7 @@ function slashUrl($url)
 function parseNodes($nodes, $child = null, $class = null) 
 {
     if (empty($child)) {
-        $ul = '<ul class="nav navbar-nav '.$class.'">';
+        $ul = '<div class="nav navbar-nav '.$class.'">';
         foreach ($nodes as $node) {
             if (isset($node->children)) {
                 $ul .= parseNode($node, true);
@@ -2599,7 +2605,7 @@ function parseNodes($nodes, $child = null, $class = null)
         $ul .= '</ul>';
         return $ul;
     } else {
-        $ul = '<ul class="subnav dropdown-menu" role="menu">';
+        $ul = '<div class="subnav dropdown-menu" role="menu">';
         foreach ($nodes as $node) {
             if (isset($node->children)) {
                 $ul .= parseNode($node, true);
@@ -2622,18 +2628,18 @@ function parseNode($node, $child = null)
         if (isset($url['host']) && isset($su['host'])) {
             if ($url['host'] ==  $su['host']) {
                 if (slashUrl($url['path']) == slashUrl($req)) {
-                    $li = '<li class="item nav-item active '.$node->class.'">';
+                    $li = '<span class="nav-item active '.$node->class.'">';
                 } else  {
-                    $li = '<li class="item nav-item '.$node->class.'">';
+                    $li = '<span class="nav-item '.$node->class.'">';
                 }
             } else {
-                $li = '<li class="item nav-item '.$node->class.'">'; // Link out
+                $li = '<span class="nav-item '.$node->class.'">'; // Link out
             }
         } else {
             if (slashUrl($node->slug) == slashUrl($req)) {
-                $li = '<li class="item nav-item active '.$node->class.'">';
+                $li = '<span class="nav-item active '.$node->class.'">';
             } else {
-                $li = '<li class="item nav-item '.$node->class.'">';
+                $li = '<span class="nav-item '.$node->class.'">';
             }
         }
 
@@ -2641,25 +2647,25 @@ function parseNode($node, $child = null)
         if (isset($node->children)) {
             $li .= parseNodes($node->children, true, null);
         }
-        $li .= '</li>';
+        $li .= '</span>';
         return $li;
     } else {
 
         if (isset($url['host']) && isset($su['host'])) {
             if ($url['host'] ==  $su['host']) {
                 if (slashUrl($url['path']) == slashUrl($req)) {
-                    $li = '<li class="item nav-item dropdown active '.$node->class.'">';
+                    $li = '<span class="nav-item dropdown active '.$node->class.'">';
                 } else  {
-                    $li = '<li class="item nav-item dropdown '.$node->class.'">';
+                    $li = '<span class="nav-item dropdown '.$node->class.'">';
                 }
             } else {
-                $li = '<li class="item nav-item dropdown '.$node->class.'">'; // Link out
+                $li = '<span class="nav-item dropdown '.$node->class.'">'; // Link out
             }
         } else {
             if (slashUrl($node->slug) == slashUrl($req)) {
-                $li = '<li class="item nav-item dropdown active '.$node->class.'">';
+                $li = '<span class="nav-item dropdown active '.$node->class.'">';
             } else {
-                $li = '<li class="item nav-item dropdown '.$node->class.'">';
+                $li = '<span class="nav-item dropdown '.$node->class.'">';
             }
         }
 
@@ -2667,7 +2673,7 @@ function parseNode($node, $child = null)
         if (isset($node->children)) {
             $li .= parseNodes($node->children, true, null);
         }
-        $li .= '</li>';
+        $li .= '</span>';
         return $li;
     }
 }
