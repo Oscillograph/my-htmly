@@ -74,6 +74,7 @@ foreach ($posts as $p):?>
     </footer><!-- .entry-footer -->
 </article><!-- #post-## -->
 <?php $i++; if ($i != $i_max): ?>
+	<p>&nbsp;</p>
 	<hr>
 <?php endif; ?>
 
