@@ -4,7 +4,6 @@ include('sidebar-plugin-start.php');
 include('sidebar-plugin-head.php');
 include('sidebar-plugin-body.php');
 include('sidebar-plugin-end.php');
-include('plugins.php');
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo blog_language();?>">

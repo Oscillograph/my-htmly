@@ -1,7 +1,7 @@
 <?php
 if (!defined('HTMLY')) die('HTMLy');
 
-define('PLUGINS_BASE_DIR', __DIR__ . 'plugins/');
+define('PLUGINS_BASE_DIR', __DIR__ . '/plugins/');
 
 // this is what every plugin should be able to do
 abstract class Plugin
@@ -21,7 +21,7 @@ abstract class Plugin
 $plugins_registry = [];
 
 // fill $plugins_registry with plugins
-require 'plugins/plugins_registry.php';
+require_once 'plugins/plugins_registry.php';
 
 // registration should look like this:
 // in plugins_registry.php:
