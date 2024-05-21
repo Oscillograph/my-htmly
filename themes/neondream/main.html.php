@@ -80,17 +80,17 @@ foreach ($posts as $p):?>
 
 <?php endforeach;?>
 
+<p>&nbsp;</p>
+<hr>
 <?php if (!empty($pagination['prev']) || !empty($pagination['next'])): ?>
 <div class="navigation pagination">
-    <div class="nav-links">
-        <?php if (!empty($pagination['prev'])): ?>
-            <a class="prev page-numbers" href="?page=<?php echo $page - 1 ?>">«</a>
-        <?php endif; ?>
-        <span class="page-numbers"><?php echo $pagination['pagenum'];?></span>
-        <?php if (!empty($pagination['next'])): ?>
-            <a class="next page-numbers" href="?page=<?php echo $page + 1 ?>">»</a>
-        <?php endif; ?>
-    </div>
+	<?php if (!empty($pagination['prev'])): ?>
+		<a class="prev page-numbers" href="?page=<?php echo $page - 1 ?>">«</a>
+	<?php endif; ?>
+	<span class="page-numbers"><?php echo $pagination['pagenum'];?></span>
+	<?php if (!empty($pagination['next'])): ?>
+		<a class="next page-numbers" href="?page=<?php echo $page + 1 ?>">»</a>
+	<?php endif; ?>
 </div>
 <?php endif; ?>
 

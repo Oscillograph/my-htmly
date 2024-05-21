@@ -57,48 +57,39 @@ include('sidebar-plugin-end.php');
 		<table class='inner-glow'><tr><td>
 			<table class='outer-glow-yellow'><tr>
 				<td class='content'>
+					<table>
+						<tr>
+							<td>
+								<?php echo content();?>
+								<!-- .site-main -->
+							</td>
+							<td class='sidebar outer-glow-yellow'>
+								<?php echo sidebar_plugin_start_html(); ?>
+								<?php echo sidebar_plugin_head_html(); ?>
+									<?php echo i18n("Categories");?>
+								<?php echo sidebar_plugin_body_html(); ?>
+									<?php echo category_list() ?>
+								<?php echo sidebar_plugin_end_html(); ?>
+								
+								<?php echo sidebar_plugin_start_html(); ?>
+								<?php echo sidebar_plugin_head_html(); ?>
+									<?php echo i18n("Tags");?>
+								<?php echo sidebar_plugin_body_html(); ?>
+									<?php echo tag_cloud();?>
+								<?php echo sidebar_plugin_end_html(); ?>
 
-					<div class='sidebar outer-glow-yellow'>
-						<?php echo sidebar_plugin_start_html(); ?>
-						<?php echo sidebar_plugin_head_html(); ?>
-							<span>Поиск по сайту</span>
-						<?php echo sidebar_plugin_body_html(); ?>
-							<form role="search">
-							<label>
-								<input type="search" placeholder="<?php echo i18n("Search");?> &hellip;" value="" name="search" title="<?php echo i18n("Search_for");?>:" />
-							</label>
-							<button type="submit">Искать</button>
-							</form>
-						<?php echo sidebar_plugin_end_html(); ?>
-						
-						<?php echo sidebar_plugin_start_html(); ?>
-						<?php echo sidebar_plugin_head_html(); ?>
-							<?php echo i18n("Categories");?>
-						<?php echo sidebar_plugin_body_html(); ?>
-							<?php echo category_list() ?>
-						<?php echo sidebar_plugin_end_html(); ?>
-						
-						<?php echo sidebar_plugin_start_html(); ?>
-						<?php echo sidebar_plugin_head_html(); ?>
-							<?php echo i18n("Tags");?>
-						<?php echo sidebar_plugin_body_html(); ?>
-							<?php echo tag_cloud();?>
-						<?php echo sidebar_plugin_end_html(); ?>
-
-						<?php echo sidebar_plugin_start_html(); ?>
-						<?php echo sidebar_plugin_head_html(); ?>
-							Дружбанские ссылки
-						<?php echo sidebar_plugin_body_html(); ?>
-						<center>
-							<a href="http://sf.fancon.ru/">Открытый конкурс НФ</a><br>
-							<a href="http://conkings.com/">Короли Созвездий</a>
-						</center>
-						<?php echo sidebar_plugin_end_html(); ?>
-					</div>
-
-                    <main id="main" class="site-main" role="main">
-                        <?php echo content();?>
-                    </main><!-- .site-main -->
+								<?php echo sidebar_plugin_start_html(); ?>
+								<?php echo sidebar_plugin_head_html(); ?>
+									Дружбанские ссылки
+								<?php echo sidebar_plugin_body_html(); ?>
+								<center>
+									<a href="http://sf.fancon.ru/">Открытый конкурс НФ</a><br>
+									<a href="http://conkings.com/">Короли Созвездий</a>
+								</center>
+								<?php echo sidebar_plugin_end_html(); ?>
+							</td>
+						</tr>
+					</table>
 				</td>
 			</tr></table>
 		</td></tr></table>
@@ -111,7 +102,7 @@ include('sidebar-plugin-end.php');
                 <table id='footer'>
                     <tr>
                         <td>
-							<p class='paper-title'>Контакты</p>
+							<p class='paper-title' style='text-indent: 0em;'>Контакты</p>
 							<?php echo social();?>
 							<!--
                             <p>Telegram: Broscillograph</p>
@@ -120,7 +111,7 @@ include('sidebar-plugin-end.php');
 							-->
                         </td>
                         <td><!--
-                            <p class='paper-title'>Важные разделы</p>
+                            <p class='paper-title' style='text-indent: 0em;'>Важные разделы</p>
                             <a href='#' target='_blank'>Об авторе</a><br>
                             <a href='#' target='_blank'>Портфолио</a><br>
                             <a href='#' target='_blank'>Статьи</a><br>
@@ -128,13 +119,13 @@ include('sidebar-plugin-end.php');
 							-->
                         </td>
                         <td>
-                            <!--<p class='paper-title'>Колонка три.</p>-->
+                            <!--<p class='paper-title' style='text-indent: 0em;'>Колонка три.</p>-->
 
                         </td>
 
 						<td>
-							<p class='paper-title'>Про сайт</p>
-							<p>
+							<p class='paper-title' style='text-indent: 0em;'>Про сайт</p>
+							<p style='text-indent: 0em;'>
 							<?php echo copyright();?><br />
 							Сайт оптимизирован для работы на ПК.<br />
 							</p>
@@ -145,7 +136,7 @@ include('sidebar-plugin-end.php');
 			</tr></table>
 		</td></tr></table>
 	</td></tr></table>
-            </footer><!-- .site-footer -->
+<!-- .site-footer -->
 
     <!--[if lt IE 9]>
     <script type="text/javascript" src="<?php echo theme_path();?>js/html5.js"></script>

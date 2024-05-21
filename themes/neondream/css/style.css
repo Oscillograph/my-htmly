@@ -89,25 +89,34 @@ a:hover
 	text-decoration: none;
 }
 
-pre,
-code {
+pre, 
+code,
+em
+{
 	background: #00383f;
 	color: #e8e800;
 	max-width: 800px;
-	min-width: 300px;
+	min-width: 100px;
 }
 
-pre {
+pre 
+{
 	/* border-left: 2px solid #ccc; */
 	padding: 10px;
 	overflow-x: auto;
 }
 
-code {
+code 
+{
 	display: inline-block;
 	padding: 0 0.5em;
 	line-height: 1.4em;
 	border-radius: 3px;
+}
+
+p
+{
+	text-indent: 2em;
 }
 
 /* Abstract theme stuff */
@@ -115,6 +124,7 @@ code {
 #main-table
 {
 /*	background-color: #000000; */
+/*	width: calc(100% - 340px); */
 }
 
 #main-menu
@@ -192,6 +202,7 @@ code {
 
 .content
 {
+	min-width: 100px;
 	text-align: justify;
 	margin: 5px;
 	font-size: 14px;
@@ -199,17 +210,74 @@ code {
 	background-color: #000000;
 }
 
-.content p, div, span, pre, code
+.content p, 
+.content div, 
+.content span, 
+.content pre, 
+.content code
 {
 	margin: 5px;
+	padding-right: 5px;
+}
+
+.content p img
+{
+	display: block;
+	min-width: 100px;
+	width: 100%;
+	max-width: 600px;
 }
 
 .sidebar
 {
-	margin-left: 30px;
-	margin-bottom: 30px;
+	padding-left: 5px;
+	margin-left: 10px;
+	margin-bottom: 10px;
 	width: 320px;
-	float: right;
+/*	float: right; */
+}
+
+.pagination
+{
+	margin-top: 10px;
+	margin-bottom: 10px;
+	text-align: center;
+}
+
+.post-table
+{
+	min-width: 100px;
+	width: 100%;
+	max-width: 100%;
+	border: #4f4f4f solid 1px;
+}
+
+.post-table tr td
+{
+	border: #4f4f4f solid 1px;
+}
+
+table tr .screenshot
+{
+	width: 300px;
+	max-width: 300px;
+	padding: 5px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.screenshot img
+{
+	min-width: 100px;
+}
+
+table tr .description
+{
+	min-width: 100px;
+	max-width: 100%;
+	padding: 5px;
+	text-align: justify;
+	vertical-align: top;
 }
 
 .paper-preview
@@ -257,6 +325,7 @@ code {
 {
 	text-align: center;
 	color: #efef00;
+	font-size: 16px;
 }
 
 .plugin-content
