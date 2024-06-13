@@ -1,4 +1,5 @@
 <?php if (!defined('HTMLY')) die('HTMLy'); ?>
+<?php if (file_exists('login.lock')) die('Login system locked.'); ?>
 <style>.error-message ul {margin:0;padding:0;}</style>
 <?php if (isset($error)) { ?>
     <div class="error-message"><?php echo $error ?></div>

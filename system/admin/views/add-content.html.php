@@ -175,7 +175,7 @@ $( function() {
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-6" style="flex-basis: 100%; max-width: 100%">
                     <div>
                         <label for="wmd-input"><?php echo i18n('Content');?> <span class="required">*</span></label>
                         <div id="wmd-button-bar" class="wmd-button-bar"></div>
@@ -184,11 +184,11 @@ $( function() {
                         <br><br>
                     </div>
                 </div>
-                <div class="col-sm-6">
+<!--                <div class="col-sm-6">
                     <label><?php echo i18n('Preview');?></label>
                     <br>
                     <div id="wmd-preview" class="wmd-panel wmd-preview" style="width:100%;overflow:auto;"></div>
-                </div>
+                </div>-->
             </div>
         </form>
     </div>

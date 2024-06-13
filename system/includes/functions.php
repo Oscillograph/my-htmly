@@ -533,7 +533,8 @@ function get_posts($posts, $page = 1, $perpage = 0)
         }
 
         // Get the contents and convert it to HTML
-        $post->body = MarkdownExtra::defaultTransform(remove_html_comments($content));
+//        $post->body = MarkdownExtra::defaultTransform(remove_html_comments($content));
+        $post->body = $content;
 
         $post->description = get_content_tag("d", $content, get_description($post->body));
 
@@ -616,7 +617,8 @@ function get_pages($pages, $page = 1, $perpage = 0)
         $post->title = get_content_tag('t', $content, 'Untitled static page: ' . format_date($post->lastMod, 'l, j F Y, H:i'));
 
         // Get the contents and convert it to HTML
-        $post->body = MarkdownExtra::defaultTransform(remove_html_comments($content));
+//        $post->body = MarkdownExtra::defaultTransform(remove_html_comments($content));
+        $post->body = $content;
 
         $post->description = get_content_tag("d", $content, get_description($post->body));
 
@@ -705,7 +707,8 @@ function get_subpages($sub_pages, $page = 1, $perpage = 0)
         $post->title = get_content_tag('t', $content, 'Untitled static subpage: ' . format_date($post->lastMod, 'l, j F Y, H:i'));
 
         // Get the contents and convert it to HTML
-        $post->body = MarkdownExtra::defaultTransform(remove_html_comments($content));
+//        $post->body = MarkdownExtra::defaultTransform(remove_html_comments($content));
+        $post->body = $content;
 
         $post->description = get_content_tag("d", $content, get_description($post->body));
 
@@ -1284,7 +1287,8 @@ function get_frontpage()
         $front->parent = null;
         $front->parentSlug = null;
         // Get the contents and convert it to HTML
-        $front->body = MarkdownExtra::defaultTransform(remove_html_comments($content));
+//        $front->body = MarkdownExtra::defaultTransform(remove_html_comments($content));
+        $front->body = $content;
         $front->description = get_content_tag("d", $content, get_description($front->body));
         $word_count = str_word_count(strip_tags($front->body));
         $front->readTime = ceil($word_count / 200);

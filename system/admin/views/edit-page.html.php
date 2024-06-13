@@ -136,10 +136,10 @@ $images = image_gallery(null, 1, 40);
             </div>
             
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-6" style="flex-basis: 100%; max-width: 100%">
                     <label for="wmd-input"><?php echo i18n('Content');?> <span class="required">*</span></label>
                     <div id="wmd-button-bar" class="wmd-button-bar"></div>
-                    <textarea id="wmd-input" class="form-control wmd-input <?php if (isset($postContent)) {if (empty($postContent)) {echo 'error';}} ?>" name="content" cols="20" rows="10"><?php echo $oldcontent ?></textarea>
+                    <textarea id="wmd-input" class="form-control wmd-input <?php if (isset($postContent)) {if (empty($postContent)) {echo 'error';}} ?>" name="content" cols="20" rows="10"><?php echo str_replace('<', '&lt;', str_replace('>', '&gt;', str_replace('&', '&amp;', $oldcontent))) ?></textarea>
                     <br>
                     <input type="hidden" name="csrf_token" value="<?php echo get_csrf() ?>">
                     <?php if($type == 'is_frontpage' || $type == 'is_profile') { ?>
@@ -159,11 +159,11 @@ $images = image_gallery(null, 1, 40);
                         <?php } ?>
                     <?php } ?>
                 </div>
-                <div class="col-sm-6">
+<!--                <div class="col-sm-6">
                     <label><?php echo i18n('Preview');?></label>
                     <br>
                     <div id="wmd-preview" class="wmd-panel wmd-preview" style="width:100%;overflow:auto;"></div>
-                </div>
+                </div>-->
             </div>
         </form>
     </div>

@@ -35,7 +35,7 @@
             </div>
             
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-6" style="flex-basis: 100%; max-width: 100%">
                     <label for="wmd-input"><?php echo i18n('Content');?> <span class="required">*</span></label>
                     <div id="wmd-button-bar" class="wmd-button-bar"></div>
                     <textarea id="wmd-input" class="form-control wmd-input <?php if (isset($postContent)) {if (empty($postContent)) {echo 'error';}} ?>" name="content" cols="20" rows="10"><?php if (isset($postContent)) {echo $postContent;} ?></textarea>
@@ -48,11 +48,11 @@
                         <input type="submit" name="submit" class="btn btn-primary submit" value="<?php echo i18n('Add_category');?>"/>
                     <?php endif;?>
                 </div>
-                <div class="col-sm-6">
+<!--                <div class="col-sm-6">
                     <label><?php echo i18n('Preview');?></label>
                     <br>
                     <div id="wmd-preview" class="wmd-panel wmd-preview" style="width:100%;overflow:auto;"></div>
-                </div>
+                </div>-->
             </div>
         </form>
     </div>

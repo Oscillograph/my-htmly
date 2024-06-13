@@ -222,11 +222,11 @@ $( function() {
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-6" style="flex-basis: 100%; max-width: 100%">
                     <div>
                         <label for="wmd-input"><?php echo i18n('Content');?> <span class="required">*</span></label>
                         <div id="wmd-button-bar" class="wmd-button-bar"></div>
-                        <textarea id="wmd-input" class="form-control wmd-input <?php if (isset($postContent)) { if (empty($postContent)) { echo 'error'; } } ?>" name="content" cols="20" rows="15"><?php echo $oldcontent ?></textarea><br>
+                        <textarea id="wmd-input" class="form-control wmd-input <?php if (isset($postContent)) { if (empty($postContent)) { echo 'error'; } } ?>" name="content" cols="20" rows="15"><?php echo str_replace('<', '&lt;', str_replace('>', '&gt;', str_replace('&', '&amp;', $oldcontent))) ?></textarea><br>
                         <?php if ($isdraft[4] == 'draft') { ?>
                             <input type="submit" name="publishdraft" class="btn btn-primary submit" value="<?php echo i18n('Publish_draft');?>"/> <input type="submit" name="updatedraft" class="btn btn-primary draft" value="<?php echo i18n('Update_draft');?>"/> <a class="btn btn-danger" href="<?php echo $delete ?>"><?php echo i18n('Delete');?></a>
                         <?php } else { ?>
@@ -235,11 +235,11 @@ $( function() {
                         <br><br>
                     </div>
                 </div>
-                <div class="col-sm-6">
+<!--                <div class="col-sm-6">
                     <label><?php echo i18n('Preview');?></label>
                     <br>
                     <div id="wmd-preview" class="wmd-panel wmd-preview" style="width:100%;overflow:auto;"></div>
-                </div>
+                </div>-->
             </div>
         </form>
     </div>
