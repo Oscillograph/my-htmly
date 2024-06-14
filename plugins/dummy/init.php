@@ -35,6 +35,11 @@ class Plugin_Dummy extends Plugin
 	public function frontend_theme_end()
 	{
 	}
+
+	public function name()
+	{
+		return "Dummy";
+	}
 }
 
 $plugins_registry['dummy'] = new Plugin_Dummy();

@@ -1,10 +1,5 @@
 <?php if (!defined('HTMLY')) die('HTMLy'); ?>
-<?php
-include('sidebar-plugin-start.php');
-include('sidebar-plugin-head.php');
-include('sidebar-plugin-body.php');
-include('sidebar-plugin-end.php');
-?>
+<?php plugins_frontend_theme_start(); ?>
 <!DOCTYPE html>
 <html lang="<?php echo blog_language();?>">
 <head>

@@ -16,6 +16,9 @@ abstract class Plugin
 	abstract public function frontend_theme_content();
 	abstract public function frontend_theme_footer();
 	abstract public function frontend_theme_end();
+
+	/* general properties */
+	abstract public function name();
 }
 
 $plugins_registry = [];
@@ -43,6 +46,7 @@ function plugins_backend_processor()
 
 function plugins_frontend_theme_start()
 {
+	global $plugins_registry;
 	foreach($plugins_registry as $plugin)
 	{
 		$plugin->frontend_theme_start();
@@ -51,6 +55,7 @@ function plugins_frontend_theme_start()
 
 function plugins_frontend_theme_header()
 {
+	global $plugins_registry;
 	foreach($plugins_registry as $plugin)
 	{
 		$plugin->frontend_theme_header();
@@ -59,6 +64,7 @@ function plugins_frontend_theme_header()
 
 function plugins_frontend_theme_content()
 {
+	global $plugins_registry;
 	foreach($plugins_registry as $plugin)
 	{
 		$plugin->frontend_theme_content();
@@ -67,6 +73,7 @@ function plugins_frontend_theme_content()
 
 function plugins_frontend_theme_footer()
 {
+	global $plugins_registry;
 	foreach($plugins_registry as $plugin)
 	{
 		$plugin->frontend_theme_footer();
@@ -75,8 +82,70 @@ function plugins_frontend_theme_footer()
 
 function plugins_frontend_theme_end()
 {
+	global $plugins_registry;
 	foreach($plugins_registry as $plugin)
 	{
 		$plugin->frontend_theme_end();
 	}
 }
+
+// Show admin/pages
+get('/admin/plugin/:static', function ($static) 
+{
+	global $plugins_registry;
+	$user = $_SESSION[site_url()]['user'];
+	$role = user('role', $user);
+	if (login()) {
+		config('views.root', 'system/admin/views');
+
+		$plugin = $plugins_registry[$static];
+
+		render('plugin', array(
+			'metatags' => generate_meta(null, null),
+			'plugin' => $plugin,
+			'title' => $plugin->name(),
+			'plugin_name' => $plugin->name(),
+			'is_page' => true
+		));
+
+	} else {
+        $login = site_url() . 'login';
+        header("location: $login");
+    } 
+});
+
+post('/admin/plugin/:static', function ($static) {
+	global $plugins_registry;
+	$proper = is_csrf_proper(from($_REQUEST, 'csrf_token'));
+	if (!login())
+	{
+        $login = site_url() . 'login';
+        header("location: $login");
+		return;
+	}
+
+	if (!$proper)
+	{
+		echo 'CSRF attack detected.';
+		return;
+	}
+
+	$user = $_SESSION[site_url()]['user'];
+	$role = user('role', $user);
+	if ($role === 'admin')
+	{
+		$plugin = $plugins_registry[$static];
+		$plugin->admin_process_form();
+
+		config('views.root', 'system/admin/views');
+		render('plugin', array(
+			'metatags' => generate_meta(null, null),
+			'plugin' => $plugin,
+			'title' => $plugin->name(),
+			'plugin_name' => $plugin->name(),
+			'is_page' => true
+		));
+	} else {
+		echo 'Not enough rights to change plugin settings.';
+	}
+});
