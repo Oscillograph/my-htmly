@@ -93,6 +93,11 @@ body table tr td {
 	font-weight: 700;
 }
 
+bigmath {
+	display: block;
+	width: 95%;
+}
+
 /* Headbar settings */
 .headbar {
 	text-align: left;
@@ -197,7 +202,7 @@ body table tr td {
 }
 
 .mainsection table {
-	vertical-align: top;
+	vertical-align: top;	
 }
 
 .paper-title {
@@ -315,24 +320,4 @@ body table tr td {
 	border: 1px dashed white;
 	text-align: center;
 	vertical-align: top;
-}
-
-/* Special BB-Tag styles */
-.spoiler {
-/* 	border: 1px dashed #ffffff; */
-}
-
-.spoiler-head {
-	background: #446688;
-	padding: 0.25em;
-	text-indent: 2em;
-	cursor: pointer;
-}
-
-.spoiler-content {
-	display: none;
-	margin-bottom: 1em;
-	border: 1px dashed #ffff00;
-	border-top: 1px solid #ffffff;
-	background: #000000;
 }

@@ -87,7 +87,7 @@
     <table class='content'>
         <tr>
             <td class='caption'>
-                <h1>Сайт в разработке.</h1>
+                <h1>Сайт на техобслуживании.</h1>
             </td>
         </tr>
         <tr>

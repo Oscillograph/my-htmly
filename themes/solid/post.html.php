@@ -10,7 +10,7 @@
 <br>
 	<?php if (authorized($p)) { echo '<span class="edit-link"><a href="'. $p->url .'/edit?destination=post">Edit</a></span>'; } ?>
 	<span class="posted-on"><?php echo i18n('Posted_on');?> <time class="entry-date published"><?php echo format_date($p->date) ?></time></span>
-    <b>Рубрика:</b> <?php echo $p->category;?> | 
+    | <b>Рубрика:</b> <?php echo $p->category;?> | 
     <b>Метки: </b> <?php echo $p->tag;?>
 
     </header><!-- .entry-header -->

@@ -1,7 +1,7 @@
 <?php if (!defined('HTMLY')) die('HTMLy'); ?>
 <article class="page type-page hentry">
     <header class="entry-header">
-        <h1 class="entry-title">По запрошенному адресу ничего не обнаружено.</h1>
+        <h1 class="entry-title">404 -- по запрошенному адресу ничего не обнаружено.</h1>
     </header>
     <div class="entry-content">
         <p>Пожалуйста, воспользуйтесь поиском или перейдите на <a href="<?php echo site_url() ?>">главную</a> страницу.</p>

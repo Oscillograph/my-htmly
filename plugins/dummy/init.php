@@ -20,12 +20,10 @@ class Plugin_Dummy extends Plugin
 
 	public function frontend_theme_header()
 	{
-		echo 'Dummy Plugin';
 	}
 
 	public function frontend_theme_content()
 	{
-		echo 'Dummy Plugin Operational. <br>Let us bring content!';
 	}
 
 	public function frontend_theme_footer()

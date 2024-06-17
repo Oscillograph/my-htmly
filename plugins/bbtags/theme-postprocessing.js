@@ -7,12 +7,15 @@ function htmlSpecialChars(str)
 }
 
 // HTML Tags
+var tagCollection;
+
 // Pre
-preCollection = document.getElementsByTagName('pre');
-for (i = 0; i < preCollection.length; ++i)
+tagCollection = document.getElementsByTagName('pre');
+for (i = 0; i < tagCollection.length; ++i)
 {
-	preCollection[i].innerHTML = htmlSpecialChars(preCollection[i].innerHTML);
+	tagCollection[i].innerHTML = htmlSpecialChars(tagCollection[i].innerHTML);
 }
+
 
 // BB-Tags
 var match;

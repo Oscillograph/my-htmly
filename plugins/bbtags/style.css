@@ -1,0 +1,19 @@
+/* Special BB-Tag styles */
+.spoiler {
+/* 	border: 1px dashed #ffffff; */
+}
+
+.spoiler-head {
+	background: #446688;
+	padding: 0.25em;
+	text-indent: 2em;
+	cursor: pointer;
+}
+
+.spoiler-content {
+	display: none;
+	margin-bottom: 1em;
+	border: 1px dashed #ffff00;
+	border-top: 1px solid #ffffff;
+	background: #000000;
+}

@@ -140,4 +140,31 @@ function adv_tag_cloud($custom = null)
     }
 }
 
+// output head contents
+function adv_head_contents()
+{
+    $output = '';
+    $wmt_id = config('google.wmt.id');
+    $version = 'HTMLy ' . constant('HTMLY_VERSION');
+    $favicon = config('favicon.image');
+    if (empty($favicon)) {
+        $favicon = '<link rel="icon" type="image/png" href="' . site_url() . 'favicon.png" />' . "\n";
+    } else {
+        $favicon = '<link rel="icon" type="image/'. pathinfo($favicon, PATHINFO_EXTENSION) .'" href="' . $favicon . '" />' . "\n";
+    }
+
+    $output .= '<meta charset="utf-8" />' . "\n";
+    $output .= '<meta http-equiv="X-UA-Compatible" content="IE=edge" />' . "\n";
+//    $output .= '<meta name="viewport" content="width=device-width, initial-scale=1" />' . "\n";
+    $output .= '<meta name="generator" content="' . $version . '" />' . "\n";
+    $output .= $favicon;
+    $output .= '<link rel="sitemap" href="' . site_url() . 'sitemap.xml" />' . "\n";
+    $output .= '<link rel="alternate" type="application/rss+xml" title="' . blog_title() . ' Feed" href="' . site_url() . 'feed/rss" />' . "\n";
+    if (!empty($wmt_id)) {
+        $output .=  '<meta name="google-site-verification" content="' . $wmt_id . '" />' . "\n";
+    }
+
+    return $output;
+}
+
 ?>

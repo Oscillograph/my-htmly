@@ -51,7 +51,7 @@ foreach ($posts as $p):?>
 
 	<?php if (authorized($p)) { echo '<span class="edit-link"><a href="'. $p->url .'/edit?destination=post">Edit</a></span>'; } ?>
 	<span class="posted-on"><?php echo i18n('Posted_on');?> <time class="entry-date published"><?php echo format_date($p->date) ?></time></span>
-    <b>Рубрика:</b> <?php echo $p->category;?> | 
+    | <b>Рубрика:</b> <?php echo $p->category;?> | 
     <b>Метки: </b> <?php echo $p->tag;?>
         
 
@@ -85,11 +85,13 @@ foreach ($posts as $p):?>
 <?php if (!empty($pagination['prev']) || !empty($pagination['next'])): ?>
 <div class="navigation pagination">
 	<?php if (!empty($pagination['prev'])): ?>
-		<a class="prev page-numbers" href="blog?page=<?php echo $page - 1 ?>">««</a>
+		<a class="prev page-numbers" href="blog?page=1">«««</a> &nbsp;
+		<a class="prev page-numbers" href="blog?page=<?php echo ($page - 1); ?>">««</a>
 	<?php endif; ?>
 	<span class="page-numbers"><?php echo $pagination['pagenum'];?></span>
 	<?php if (!empty($pagination['next'])): ?>
-		<a class="next page-numbers" href="blog?page=<?php echo $page + 1 ?>">»»</a>
+		<a class="next page-numbers" href="blog?page=<?php echo ($page + 1); ?>">»»</a>
+		&nbsp; <a class="next page-numbers" href="blog?page=<?php echo round($pagination['items'] / $pagination['perpage'], 0, PHP_ROUND_HALF_UP); ?>">»»»</a>
 	<?php endif; ?>
 </div>
 <?php endif; ?>

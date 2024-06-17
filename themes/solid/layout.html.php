@@ -4,9 +4,10 @@
 <html lang="<?php echo blog_language();?>">
 <head>
 	<base href='<?php echo site_url(); ?>'>
-    <?php echo head_contents();?>
+    <?php echo adv_head_contents();?>
     <title><?php echo $title;?></title>
-    <meta name="description" content="<?php echo $description; ?>"/>
+    <meta name="description" content="Домашняя страница радиоинженера ТехнОкраТ aka Живой Осциллограф. Разработка игр, сайтостроительство, радиолокация, радиовидение, писательство, наука, исследования, культура"/>
+	<meta name="keywords" content="<?php echo $description; ?>"/>
     <link rel="canonical" href="<?php echo $canonical; ?>" />
     <link rel="icon" type="image/png" href="<?php echo theme_path();?>img/favicon.png" />
     <?php echo $metatags;?>
@@ -20,6 +21,8 @@
 		}
 	</style>
     <link rel="stylesheet" href="<?php echo theme_path();?>css/style.css" type="text/css" media="all" />
+
+	<?php plugins_frontend_theme_header(); ?>
 </head>
 <body>
 	<?php if (login()) { toolbar(); } ?>
@@ -31,75 +34,6 @@
 					<li class='nav-item'>
 						<a href='<?php echo site_url(); ?>'>Главная</a>
 					</li>
-					<!--
-					<li class='nav-item'>
-						<a href='#'>Софт</a>
-						<ul class='submenu'>
-							<li class='nav-item'>
-								<a href='#'>Движки и фреймворки</a>
-								<ul class='submenu2'>
-									<li class='nav-item'>
-										<a href='#'>Crystal Serpent Engine</a>
-									</li>
-									<li class='nav-item'>
-										<a href='#'>Savannah</a>
-									</li>
-									<li class='nav-item'>
-										<a href='#'>Blazing Serpent Engine</a>
-									</li>
-								</ul>
-							</li>
-							<li class='nav-item'>
-								<a href='#'>Игры</a>
-								<ul class='submenu2'>
-									<li class='nav-item'>
-										<a href='#'>Арканоид</a>
-									</li>
-									<li class='nav-item'>
-										<a href='#'>Волейбол</a>
-									</li>
-								</ul>
-							</li>
-							<li class='nav-item'>
-								<a href='#'>Исследовательское ПО</a>
-							</li>
-							<li class='nav-item'>
-								<a href='#'>Утилиты</a>
-							</li>
-						</ul>
-					</li>
-					-->
-					<!--
-					<li class='nav-item'>
-						<a href='blog'>Блог</a>
-						<ul class='submenu'>
-							<li class='nav-item'>
-								<a href='category/webdev'>Вебдев</a>
-							</li>
-							<li class='nav-item'>
-								<a href='category/gamedev'>Геймдев</a>
-							</li>
-							<li class='nav-item'>
-								<a href='category/notes'>Заметки</a>
-							</li>
-							<li class='nav-item'>
-								<a href='category/cyber-archaeology'>Кибер-археология</a>
-							</li>
-							<li class='nav-item'>
-								<a href='category/culture'>Культура</a>
-							</li>
-							<li class='nav-item'>
-								<a href='category/writing'>Писательство</a>
-							</li>
-							<li class='nav-item'>
-								<a href='category/radiotehnika'>Радиотехника</a>
-							</li>
-							<li class='nav-item'>
-								<a href='category/self-enlightenment'>Саморазвитие</a>
-							</li>
-						</ul>
-					</li>
-					-->
 
 					<li class='nav-item'>
 						<a href="blog">Блог</a>
@@ -109,6 +43,9 @@
 					<li class='nav-item'>
 						<a href='#'>Радиовидение</a>
 						<ul class='submenu'>
+							<li class='nav-item'>
+								<a href='#'>Разное</a>
+							</li>
 							<li class='nav-item'>
 								<a href='#'>Моделирование</a>
 							</li>
@@ -162,7 +99,7 @@
 								<li><a href='https://github.com/Oscillograph' target='_blank'>Github</a></li>
 								<li><a href='https://t.me/kvktechchannel' target='_blank'>Канал в Telegram</a></li>
 <!--								<li><a href='https://vk.com/totcreativelabs' target='_blank'>VKontakte</a></li>-->
-								<li><a href='mailto:kvk-tech@mail.ru'>Электронная почта</a>
+								<li><a href='mailto:admin@kvk-tech.ru'>Электронная почта</a>
 							</ul>
 						</td>
 						<td class='footer-section'>
@@ -190,5 +127,5 @@
 	</body>
 </html>
 
-<script type="text/javascript" src="<?php echo theme_path();?>js/page-postprocessing.js"></script>
+<?php plugins_frontend_theme_footer(); ?>
 <?php if (analytics()): ?><?php echo analytics() ?><?php endif; ?>
