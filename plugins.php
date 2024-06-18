@@ -149,3 +149,13 @@ post('/admin/plugin/:static', function ($static) {
 		echo 'Not enough rights to change plugin settings.';
 	}
 });
+
+// Show 403
+get('/403', function () 
+{
+	render('403', array(
+		'metatags' => generate_meta(null, null),
+		'title' => '403',
+		'is_page' => true
+	));
+});
