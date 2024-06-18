@@ -92,4 +92,4 @@ class Plugin_BBTags extends Plugin
 	}
 }
 
-$plugins_registry['bbtags'] = new Plugin_BBTags();
+plugin_register('bbtags', new Plugin_BBTags());

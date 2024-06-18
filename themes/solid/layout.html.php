@@ -6,15 +6,15 @@
 	<base href='<?php echo site_url(); ?>'>
     <?php echo adv_head_contents();?>
     <title><?php echo $title;?></title>
-    <meta name="description" content="Домашняя страница радиоинженера ТехнОкраТ aka Живой Осциллограф. Разработка игр, сайтостроительство, радиолокация, радиовидение, писательство, наука, исследования, культура"/>
-	<meta name="keywords" content="<?php echo $description; ?>"/>
+    <meta name="description" content="<?php echo $description; ?>"/>
+	<meta name="keywords" content="<?php echo adv_blog_keywords(); ?>"/>
     <link rel="canonical" href="<?php echo $canonical; ?>" />
     <link rel="icon" type="image/png" href="<?php echo theme_path();?>img/favicon.png" />
     <?php echo $metatags;?>
     <link rel="stylesheet" id="genericons-css"  href="<?php echo theme_path();?>genericons/genericons.css" type="text/css" media="all" />
 	<style>
 		body {
-			background-image:url(<?php echo site_url(); ?>files/games/html/common/background.jpg);
+			background-image:url(<?php echo theme_path(); ?>img/background.jpg);
 			background-repeat: no-repeat;
 			background-size: 100% auto;
 			background-attachment: fixed;

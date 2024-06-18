@@ -1,7 +1,7 @@
 <?php
 if (!defined('HTMLY')) die('HTMLy');
 
-use \Michelf\MarkdownExtra;
+//use \Michelf\MarkdownExtra;
 use \Suin\RSSWriter\Feed;
 use \Suin\RSSWriter\Channel;
 use \Suin\RSSWriter\Item;
@@ -994,7 +994,8 @@ function read_category_info($category)
                 $desc->title = get_content_tag('t', $content, $category);
 
                 // Get the contents and convert it to HTML
-                $desc->body = MarkdownExtra::defaultTransform(remove_html_comments($content));
+//                $desc->body = MarkdownExtra::defaultTransform(remove_html_comments($content));
+                $desc->body = remove_html_comments($content);
 
                 $desc->description = get_content_tag("d", $content, get_description($desc->body));
 
@@ -1226,7 +1227,8 @@ function get_author($name)
                 $author->name = get_content_tag('t', $content, $author);
 
                 // Get the contents and convert it to HTML
-                $author->about = MarkdownExtra::defaultTransform(remove_html_comments($content));
+//                $author->about = MarkdownExtra::defaultTransform(remove_html_comments($content));
+                $author->about = remove_html_comments($content);
 
                 $author->description = get_content_tag("d", $content, get_description($author->about));
 				
@@ -2724,7 +2726,8 @@ function menu($class = null)
 function get_title_from_file($v)
 {
     // Get the contents and convert it to HTML
-    $content = MarkdownExtra::defaultTransform(file_get_contents($v));
+//    $content = MarkdownExtra::defaultTransform(file_get_contents($v));
+    $content = file_get_contents($v);
 
     $filename= pathinfo($v, PATHINFO_FILENAME);
 

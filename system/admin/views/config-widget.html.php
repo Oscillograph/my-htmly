@@ -281,6 +281,18 @@
     </div>
   </div>
   <div class="form-group row">
+    <label for="social.vkontakte" class="col-sm-2 col-form-label">VKontakte</label>
+    <div class="col-sm-10">
+      <input type="text" name="-config-social.vkontakte" class="form-control" id="social.vkontakte" value="<?php echo config('social.vkontakte');?>" placeholder="https://vk.com/id123456789">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="social.telegram" class="col-sm-2 col-form-label">Telegram</label>
+    <div class="col-sm-10">
+      <input type="text" name="-config-social.telegram" class="form-control" id="social.telegram" value="<?php echo config('social.telegram');?>" placeholder="https://t.me/name">
+    </div>
+  </div>
+  <div class="form-group row">
     <div class="col-sm-10">
       <button type="submit" class="btn btn-primary"><?php echo i18n('Save_Config');?></button>
     </div>

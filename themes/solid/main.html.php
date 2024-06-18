@@ -5,30 +5,35 @@
 		<span class="social-navigation feed-link"><a href="<?php echo $category->url;?>/feed"><span class="screen-reader-text">RSS</span></a></span>
 		<div class="taxonomy-description"><?php echo $category->body;?></div>
 	</header>
+	<hr>
 <?php endif;?>
 <?php if (isset($is_tag)):?>
     <header class="page-header">
 		<span class="paper-title"><?php echo i18n('Tag');?>: <?php echo $tag->title;?></span>
 		<span class="social-navigation feed-link"><a href="<?php echo $tag->url;?>/feed"><span class="screen-reader-text">RSS</span></a></span>
 	</header>
+	<hr>
 <?php endif;?>
 <?php if (isset($is_archive)):?>
     <header class="page-header">
 		<span class="paper-title"><?php echo i18n('Archives');?>: <?php echo $archive->title;?></span>
 		<span class="social-navigation feed-link"><a href="<?php echo $archive->url;?>/feed"><span class="screen-reader-text">RSS</span></a></span>
 	</header>
+	<hr>
 <?php endif;?>
 <?php if (isset($is_search)):?>
     <header class="page-header">
 		<span class="paper-title"><?php echo i18n('Search');?>: <?php echo $search->title;?></span>
 		<span class="social-navigation feed-link"><a href="<?php echo $search->url;?>/feed"><span class="screen-reader-text">RSS</span></a></span>
 	</header>
+	<hr>
 <?php endif;?>
 <?php if (isset($is_type)):?>
     <header class="page-header">
 		<span class="paper-title">Type: <?php echo ucfirst($type->title);?></span>
 		<span class="social-navigation feed-link"><a href="<?php echo $type->url;?>/feed"><span class="screen-reader-text">RSS</span></a></span>
 	</header>
+	<hr>
 <?php endif;?>
 <?php $teaserType = config('teaser.type'); $readMore = config('read.more');?>
 <?php 

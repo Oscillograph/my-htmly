@@ -1,8 +1,92 @@
 <?php
 if (!defined('HTMLY')) die('HTMLy');
 
-require(PLUGINS_BASE_DIR . 'dummy/init.php');
-require(PLUGINS_BASE_DIR . 'advanced-functions/init.php');
-require(PLUGINS_BASE_DIR . 'maintenance/init.php');
-require(PLUGINS_BASE_DIR . 'bbtags/init.php');
-require(PLUGINS_BASE_DIR . 'katex/init.php');
+$plugins_registry = [];
+
+function plugins_ini_load()
+{
+	$plugins_setup = 0;
+
+	if (file_exists(PLUGINS_REGISTRY_FILE))
+	{
+		$plugins_setup = unserialize(file_get_contents(PLUGINS_REGISTRY_FILE));
+	}
+
+	if (!$plugins_setup)
+	{
+		$plugins_setup = array();
+	}
+
+	return $plugins_setup;
+}
+
+function plugins_get_dirs()
+{
+	$plugins_all = array();
+	$files = scandir(PLUGINS_BASE_DIR);
+	for ($i = 0; $i < count($files); ++$i)
+	{
+		if (is_dir(PLUGINS_BASE_DIR . $files[$i]))
+		{
+			if (($files[$i] != '.') && ($files[$i] != '..'))
+			{
+				$plugins_all[] = $files[$i];
+			}
+		}
+	}
+	return $plugins_all;
+}
+
+function plugin_register($name, $obj = null)
+{
+	global $plugins_registry;
+	$plugins_registry[$name] = $obj;
+}
+
+function plugin_unregister($name)
+{
+	global $plugins_registry;
+	unset($plugins_registry[$name]);
+}
+
+function update_plugins_registry($plugins = null)
+{
+	global $plugins_registry;
+
+	$plugins_set = [];
+	if (!$plugins == null)
+	{
+		$plugins_set = $plugins;
+	} else {
+		$plugins_set = plugins_ini_load();
+	}
+
+	foreach($plugins_registry as $key => $object)
+	{
+		$stillSet = false;
+
+		for ($i = 0; $i < count($plugins_set); ++$i)
+		{
+			if ($plugins_set[$i] == $key)
+			{
+				$stillSet = true;
+				unset($plugins_set[$i]);
+				$plugins_set = array_values($plugins_set);
+				$i = count($plugins_set);
+			}
+		}
+
+		if (!$stillSet)
+		{
+			unset($plugins_registry[$key]);
+		}
+	}
+
+	if (count($plugins_set) > 0)
+	{
+		for ($i = 0; $i < count($plugins_set); ++$i)
+		{
+			require(PLUGINS_BASE_DIR . $plugins_set[$i] . '/init.php');
+		}
+	}
+}

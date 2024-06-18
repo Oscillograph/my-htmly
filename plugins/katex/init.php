@@ -51,4 +51,4 @@ class Plugin_KaTeX extends Plugin
 	}
 }
 
-$plugins_registry['katex'] = new Plugin_KaTeX();
+plugin_register('katex', new Plugin_Advanced_KaTeX());

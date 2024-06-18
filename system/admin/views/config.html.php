@@ -47,6 +47,13 @@ Please install and enable the INTL extension to format the date format to your l
     </div>
   </div>
   <div class="form-group row">
+    <label for="blog.keywords" class="col-sm-2 col-form-label"><?php echo i18n('Keywords');?></label>
+    <div class="col-sm-10">
+      <textarea id="blog.keywords" name="-config-blog.keywords" class="form-control"><?php echo valueMaker(config('blog.keywords'));?></textarea>   
+      <small><em><?php echo i18n('Blog_Keywords');?></em></small>
+    </div>
+  </div>
+  <div class="form-group row">
     <label for="language" class="col-sm-2 col-form-label"><?php echo i18n('Language');?></label>
     <div class="col-sm-10">
     <select class="form-control" id="language" name="-config-language">
@@ -117,6 +124,12 @@ Please install and enable the INTL extension to format the date format to your l
           <input class="form-check-input" type="radio" name="-config-date.format" id="date.format8" value="d.m.Y" <?php if (config('date.format') === 'd.m.Y'):?>checked<?php endif;?>>
           <label class="form-check-label" for="date.format8">
             <?php echo format_date(strtotime($date), 'd.m.Y'); ?>
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="-config-date.format" id="date.format9" value="d F Y -- H:i" <?php if (config('date.format') === 'd F Y -- H:i'):?>checked<?php endif;?>>
+          <label class="form-check-label" for="date.format1">
+            <?php echo format_date(strtotime($date), 'd F Y -- H:i'); ?>
           </label>
         </div>
       </div>

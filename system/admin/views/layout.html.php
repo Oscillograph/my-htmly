@@ -228,7 +228,7 @@ if (isset($_GET['search'])) {
             </ul>
           </li>
           <?php endif;?>
-          <?php if ($role === 'editor' || $role === 'admin'):?>
+          <?php if ($role === 'admin'):?>
           <li class="nav-item has-treeview menu-open">
             <a href="#" class="nav-link">
               <i class="nav-icon fa fa-briefcase"></i>
@@ -239,15 +239,16 @@ if (isset($_GET['search'])) {
             </a>
             <ul class="nav nav-treeview">
               <?php if ($role === 'admin'):?>
-			  <?php foreach($plugins_registry as $key => $plugin) { ?>
               <li class="nav-item">
-                <a href="<?php echo site_url();?>admin/plugin/<?php echo $key; ?>" class="nav-link">
-                  <p>
-                    <?php echo $plugin->name(); ?>
-                  </p>
+                <a href="<?php echo site_url();?>admin/plugins" class="nav-link">
+					<?php echo i18n('Plugins_setup');?>
                 </a>
               </li>
-			  <?php } ?>
+              <li class="nav-item">
+                <a href="<?php echo site_url();?>admin/plugins/install" class="nav-link">
+					<?php echo i18n('Plugins_install');?>
+                </a>
+              </li>
               <?php endif;?>
             </ul>
           </li>

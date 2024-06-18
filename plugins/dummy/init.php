@@ -40,4 +40,4 @@ class Plugin_Dummy extends Plugin
 	}
 }
 
-$plugins_registry['dummy'] = new Plugin_Dummy();
+plugin_register('dummy', new Plugin_Dummy());

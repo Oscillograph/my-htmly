@@ -1,7 +1,7 @@
 <?php
 if (!defined('HTMLY')) die('HTMLy');
 
-use \Michelf\MarkdownExtra;
+// use \Michelf\MarkdownExtra;
 
 // Return username.ini value
 function user($key, $user = null)
@@ -1118,7 +1118,8 @@ function find_draft_page($static = null)
                 $post->title = get_content_tag('t', $content, 'Untitled static page: ' . format_date($post->lastMod, 'l, j F Y, H:i'));
 
                 // Get the contents and convert it to HTML
-                $post->body = MarkdownExtra::defaultTransform(remove_html_comments($content));
+//                $post->body = MarkdownExtra::defaultTransform(remove_html_comments($content));
+				$post->body = remove_html_comments($content);
 
                 if ($counter == 'true') {
                     $post->views = get_views('page_' . $post->slug, $post->file, $views);
@@ -1197,7 +1198,8 @@ function find_draft_subpage($static = null, $sub_static = null)
                 $post->title = get_content_tag('t', $content, 'Untitled static subpage: ' . format_date($post->lastMod, 'l, j F Y, H:i'));
 
                 // Get the contents and convert it to HTML
-                $post->body = MarkdownExtra::defaultTransform(remove_html_comments($content));
+//                $post->body = MarkdownExtra::defaultTransform(remove_html_comments($content));
+                $post->body = remove_html_comments($content);
 
                 if ($counter == 'true') {
                     $post->views = get_views('subpage_' . $post->parentSlug .'.'. $post->slug, $post->file, $views);

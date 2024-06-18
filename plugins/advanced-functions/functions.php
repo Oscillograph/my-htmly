@@ -167,4 +167,28 @@ function adv_head_contents()
     return $output;
 }
 
+// meta tag keywords
+function adv_blog_keywords()
+{
+	return config('blog.keywords');
+}
+
+// save custom config ini
+function adv_save_config($filename, $data = array(), $new = array())
+{
+    $string = file_get_contents($filename) . "\n";
+
+    foreach ($data as $word => $value) {
+        $value = str_replace('"', '\"', $value);
+        $string = preg_replace("/^" . $word . " = .+$/m", $word . ' = "' . $value . '"', $string);
+    }
+    $string = rtrim($string);
+    foreach ($new as $word => $value) {
+        $value = str_replace('"', '\"', $value);
+        $string .= "\n" . $word . ' = "' . $value . '"' . "\n";
+    }
+    $string = rtrim($string);
+    return file_put_contents($filename, $string, LOCK_EX);
+}
+
 ?>

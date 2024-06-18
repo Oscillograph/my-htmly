@@ -105,4 +105,4 @@ class Plugin_Maintenance extends Plugin
 	}
 }
 
-$plugins_registry['maintenance'] = new Plugin_Maintenance();
+plugin_register('maintenance', new Plugin_Maintenance());
