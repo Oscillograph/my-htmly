@@ -96,6 +96,7 @@ $images = image_gallery(null, 1, 40);
     <div class="error-message"><?php echo $error ?></div>
 <?php } ?>
 
+<div class="notice" id="response"></div>
 <div class="row">
     <div class="wmd-panel" style="width:100%;">
         <form method="POST">
@@ -141,6 +142,7 @@ $images = image_gallery(null, 1, 40);
                     <div id="wmd-button-bar" class="wmd-button-bar"></div>
                     <textarea id="wmd-input" class="form-control wmd-input <?php if (isset($postContent)) {if (empty($postContent)) {echo 'error';}} ?>" name="content" cols="20" rows="10"><?php echo str_replace('<', '&lt;', str_replace('>', '&gt;', str_replace('&', '&amp;', $oldcontent))) ?></textarea>
                     <br>
+                    <input type="hidden" id="pType" name="posttype" value="<?php echo $type; ?>">
                     <input type="hidden" name="csrf_token" value="<?php echo get_csrf() ?>">
                     <?php if($type == 'is_frontpage' || $type == 'is_profile') { ?>
                         <input type="submit" name="submit" class="btn btn-primary submit" value="<?php echo i18n('Save');?>"/>
@@ -152,10 +154,10 @@ $images = image_gallery(null, 1, 40);
                         <?php $dd = find_subpage($oldmd); ?>
                         <?php $dr = find_draft_subpage($oldmd);?>
                         <?php if (stripos($dir . '/', '/draft/') !== false) { ?>
-                        <input type="submit" name="publishdraft" class="btn btn-primary submit" value="<?php echo i18n('Publish_draft');?>"/> <input type="submit" name="updatedraft" class="btn btn-primary draft" value="<?php echo i18n('Update_draft');?>"/> <?php if (empty($dd) && empty($dr) && $type != 'is_page'):?><a class="btn btn-danger" href="<?php echo $delete ?>"><?php echo i18n('Delete');?></a><?php endif;?>
+                        <input type="submit" name="publishdraft" class="btn btn-primary submit" value="<?php echo i18n('Publish_draft');?>"/> <input type="submit" name="updatedraft" class="btn btn-primary draft" value="<?php echo i18n('Update_draft');?>"/> <?php if (empty($dd) && empty($dr)):?><a class="btn btn-danger" href="<?php echo $delete ?>"><?php echo i18n('Delete');?></a><?php endif;?>
 
                         <?php } else { ?>
-                        <input type="submit" name="submit" class="btn btn-primary submit" value="<?php echo i18n('Save');?>"/> <?php if (empty($dd) && empty($dr) && $type != 'is_page'):?><input type="submit" name="revertpage" class="btn btn-primary revert" value="<?php echo i18n('Revert_to_draft');?>"/> <a class="btn btn-danger" href="<?php echo $delete ?>"><?php echo i18n('Delete');?></a><?php endif;?>
+                        <input type="submit" name="submit" class="btn btn-primary submit" value="<?php echo i18n('Save');?>"/> <?php if (empty($dd) && empty($dr)):?><input type="submit" name="revertpage" class="btn btn-primary revert" value="<?php echo i18n('Revert_to_draft');?>"/> <a class="btn btn-danger" href="<?php echo $delete ?>"><?php echo i18n('Delete');?></a><?php endif;?>
                         <?php } ?>
                     <?php } ?>
                 </div>
@@ -264,7 +266,14 @@ $images = image_gallery(null, 1, 40);
 	
 </div>
 <!-- Declare the base path. Important -->
-<script type="text/javascript">var base_path = '<?php echo site_url() ?>'; var initial_image = '<?php echo $images;?>';</script>
+<script type="text/javascript">
+    var base_path = '<?php echo site_url() ?>';
+    var initial_image = '<?php echo $images;?>';
+    var parent_page = '<?php echo isset($parent) ? $parent : '';?>';
+    var oldfile = '<?php echo isset($url) ? $url : '';?>';
+    var addEdit = 'edit';
+    var saveInterval = 60000;
+</script>
 <script type="text/javascript" src="<?php echo site_url() ?>system/admin/editor/js/editor.js"></script>
 <?php if ($type == 'is_profile'):?>
 <script type="text/javascript" src="<?php echo site_url() ?>system/resources/js/media.uploader.js"></script>
@@ -288,3 +297,10 @@ $('.img-container').on("click", ".the-img", function(e) {
   $('#insertImageDialogURL').val($(e.target).attr('src'));
 });
 </script>
+<?php if (config('autosave.enable') == 'true' ):?>
+	<?php if ($type !== 'is_category' && $type !== 'is_profile') :?>
+		<?php if (stripos($dir . '/', '/draft/') !== false): ?>
+<script src="<?php echo site_url();?>system/resources/js/save_draft.js"></script>
+		<?php endif;?>
+	<?php endif;?>
+<?php endif;?>

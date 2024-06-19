@@ -34,7 +34,7 @@
 </form>
 
 <form method='POST' enctype='multipart/form-data'>
-	<h5>Загрузить новый плагин</h5>
+	<h5><?php echo i18n('Plugins_Upload_New'); ?></h5>
 
 	<input type="hidden" name="csrf_token" value="<?php echo get_csrf() ?>">
 	<input type='file' id='plugin_upload' name='plugin_upload' class="btn btn-xs">

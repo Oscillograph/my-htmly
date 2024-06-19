@@ -331,6 +331,7 @@ function rebuilt_cache($type = null)
     
     // Rebuilt category slug index
     $dirc = array();
+	$dirc = array_push($ctmp, 'uncategorized');
     $dirc = array_unique($ctmp, SORT_REGULAR); 
     file_put_contents('cache/index/index-category.txt', print_r(serialize($dirc), true), LOCK_EX);
     
@@ -1099,15 +1100,13 @@ function get_type($type, $page, $perpage)
         // dirname string
         $dirname = $v['dirname'];
 
-        $str = explode('/', $dirname);
-
-        if (strtolower($type) === strtolower($str[4])) {
+        if (strpos($dirname, '/' . strtolower($type)) !== false) {
             $tmp[] = $v;
         }
     }
 
     if (empty($tmp)) {
-        return false;
+        return $tmp;
     }
 
     $tmp = array_unique($tmp, SORT_REGULAR);
@@ -1141,7 +1140,7 @@ function get_tag($tag, $page, $perpage, $random = null)
     }
 
     if (empty($tmp)) {
-        return false;
+        return $tmp;
     }
 
     $tmp = array_unique($tmp, SORT_REGULAR);
@@ -1588,7 +1587,7 @@ function recent_posts($custom = null, $count = null)
 }
 
 // Return recent type lists
-function recent_type($type, $custom = null, $count = null)
+function recent_type($type, $count = null, $custom = null)
 {
     if (empty($count)) {
         $count = config('recent.count');
@@ -1600,6 +1599,7 @@ function recent_type($type, $custom = null, $count = null)
     $dir = 'cache/widget';
     $filename = 'cache/widget/recent.' . $type . '.cache';
     $tmp = array();
+    $posts = array();
     $recent = '';
 
     if (!is_dir($dir)) {
@@ -1638,6 +1638,64 @@ function recent_type($type, $custom = null, $count = null)
         }
         if (empty($posts)) {
            $recent .= '<li>No recent ' . $type . ' found</li>';
+        }
+        $recent .= '</ul>';
+        return $recent;
+    }
+}
+
+// Return recent tag posts list
+function recent_tag($tag, $count = null, $custom = null)
+{
+    if (empty($count)) {
+        $count = config('recent.count');
+        if (empty($count)) {
+            $count = 5;
+        }
+    }
+
+    $dir = 'cache/widget';
+    $filename = 'cache/widget/recent.' . $tag . '.cache';
+    $tmp = array();
+    $posts = array();
+    $recent = '';
+
+    if (!is_dir($dir)) {
+        mkdir($dir, 0775, true);
+    }
+
+    if (file_exists($filename)) {
+        $posts = unserialize(file_get_contents($filename));
+        if (count($posts) < $count) {
+            $posts = get_tag($tag, 1, $count);
+            $tmp = serialize($posts);
+            file_put_contents($filename, print_r($tmp, true), LOCK_EX);
+        }
+    } else {
+       $posts = get_tag($tag, 1, $count);
+       $tmp = serialize($posts);
+       file_put_contents($filename, print_r($tmp, true), LOCK_EX);
+    }
+
+    if (!empty($custom)) {
+        $arr = array();
+        $i = 1;
+        foreach ($posts as $post) {
+            $arr[] = $post;
+            if ($i++ >= $count)
+                break;  
+        }
+        return $arr;
+    } else {
+        $i = 1;
+        $recent .= '<ul>';
+        foreach ($posts as $post) {
+            $recent .= '<li><a href="' . $post->url . '">' . $post->title . '</a></li>';
+            if ($i++ >= $count)
+                break;
+        }
+        if (empty($posts)) {
+           $recent .= '<li>No recent ' . $tag . ' found</li>';
         }
         $recent .= '</ul>';
         return $recent;
@@ -2411,6 +2469,8 @@ function social($class = null)
     $youtube = config('social.youtube');
     $mastodon = config('social.mastodon');
     $tiktok = config('social.tiktok');
+	$vkontakte = config('social.vkontakte');
+	$telegram = config('social.telegram');
     $rss = site_url() . 'feed/rss';
     $social = '';
 
@@ -2447,6 +2507,15 @@ function social($class = null)
     if (!empty($tiktok)) {
         $social .= '<a class="social-logo-tiktok" href="' . $tiktok . '" target="_blank" rel="nofollow"><span class="screen-reader-text">TikTok</span></a>';
     }    
+
+	if (!empty($vkontakte)) {
+        $social .= '<a class="social-logo-vkontakte" href="' . $vkontakte . '" target="_blank" rel="nofollow"><span class="screen-reader-text">VKontakte</span></a>';
+    }    
+
+	if (!empty($telegram)) {
+        $social .= '<a class="social-logo-telegram" href="' . $telegram . '" target="_blank" rel="nofollow"><span class="screen-reader-text">Telegram</span></a>';
+    }    
+
 
     $social .= '<a class="social-logo-feed" href="' . $rss . '" target="_blank"><span class="screen-reader-text">RSS</span></a>';
     $social .= '</div>';
@@ -2977,11 +3046,17 @@ function generate_rss($posts, $data = null)
 }
 
 // Return post, archive url for sitemap
-function sitemap_post_path()
+function sitemap_post_path($posts, $page = 1, $perpage = 0)
 {
-    $posts = get_blog_posts();
+    if (empty($posts)) {
+        $posts = get_blog_posts();
+    }
+
+    krsort($posts);
 
     $tmp = array();
+
+	$posts = array_slice($posts, ($page - 1) * $perpage, $perpage);
 
     foreach ($posts as $index => $v) {
 
@@ -3011,12 +3086,12 @@ function sitemap_post_path()
         $post->lastMod = strtotime(date('Y-m-d H:i:s', filemtime($filepath)));
 
         // The archive per day
-        $post->archiveday = site_url() . 'archive/' . date('Y-m-d', $post->date);
+//        $post->archiveday = site_url() . 'archive/' . date('Y-m-d', $post->date);
 
-        // The archive per day
+        // The archive per month
         $post->archivemonth = site_url() . 'archive/' . date('Y-m', $post->date);
 
-        // The archive per day
+        // The archive per year
         $post->archiveyear = site_url() . 'archive/' . date('Y', $post->date);
 
         // The post URL
@@ -3078,35 +3153,35 @@ function generate_sitemap($str)
 
         $map .= '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 
-        if (config('sitemap.priority.base') !== 'false') {
+        if (config('sitemap.priority.base') !== '-1') {
             $map .= '<sitemap><loc>' . site_url() . 'sitemap.base.xml</loc></sitemap>';
         }
 
-        if (config('sitemap.priority.post') !== 'false') {
+        if (config('sitemap.priority.post') !== '-1') {
             $map .= '<sitemap><loc>' . site_url() . 'sitemap.post.xml</loc></sitemap>';
         }
 
-        if (config('sitemap.priority.static') !== 'false') {
+        if (config('sitemap.priority.static') !== '-1') {
             $map .= '<sitemap><loc>' . site_url() . 'sitemap.static.xml</loc></sitemap>';
         }
 
-        if (config('sitemap.priority.category') !== 'false') {
+        if (config('sitemap.priority.category') !== '-1') {
             $map .= '<sitemap><loc>' . site_url() . 'sitemap.category.xml</loc></sitemap>';
         }
 
-        if (config('sitemap.priority.tag') !== 'false') {
+        if (config('sitemap.priority.tag') !== '-1') {
             $map .= '<sitemap><loc>' . site_url() . 'sitemap.tag.xml</loc></sitemap>';
         }
 
-        if (config('sitemap.priority.archiveDay') !== 'false' || config('sitemap.priority.archiveMonth') !== 'false' || config('sitemap.priority.archiveYear') !== 'false') {
+        if (config('sitemap.priority.archiveDay') !== '-1' || config('sitemap.priority.archiveMonth') !== '-1' || config('sitemap.priority.archiveYear') !== '-1') {
             $map .= '<sitemap><loc>' . site_url() . 'sitemap.archive.xml</loc></sitemap>';
         }
 
-        if (config('sitemap.priority.author') !== 'false') {
+        if (config('sitemap.priority.author') !== '-1') {
             $map .= '<sitemap><loc>' . site_url() . 'sitemap.author.xml</loc></sitemap>';
         }
 
-        if (config('sitemap.priority.type') !== 'false') {
+        if (config('sitemap.priority.type') !== '-1') {
             $map .= '<sitemap><loc>' . site_url() . 'sitemap.type.xml</loc></sitemap>';
         }
 
@@ -3118,26 +3193,48 @@ function generate_sitemap($str)
 
         $map .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 
-        if ($priority !== 'false') {
+        if ($priority !== '-1') {
             $map .= '<url><loc>' . site_url() . '</loc><priority>' . $priority . '</priority></url>';
         }
 
         $map .= '</urlset>';
 
-    } elseif ($str == 'post.xml') {
+    } elseif (strpos($str, 'post.') !== false ) {
 
-        $priority = (config('sitemap.priority.post')) ? config('sitemap.priority.post') : $default_priority;
+        if ($str == 'post.xml') {
 
-        $posts = array();
-        if ($priority !== 'false') {
-            $posts = sitemap_post_path();
-        }
+            $map .= '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 
-        $map .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+			$totalPosts = array();
+			$totalPosts = get_blog_posts();
 
-        foreach ($posts as $p) {
+            $total = count($totalPosts);
+            $totalPage = ceil($total / 500);
 
-            $map .= '<url><loc>' . $p->url . '</loc><priority>' . $priority . '</priority><lastmod>' . date('Y-m-d\TH:i:sP', $p->lastMod) . '</lastmod></url>';
+            for ($i = 1; $i <= $totalPage; $i++) {
+                $map .= '<sitemap><loc>' . site_url() . 'sitemap.post.'. $i .'.xml</loc></sitemap>';
+            }
+
+            $map .= '</sitemapindex>';
+
+        } else {
+
+            $priority = (config('sitemap.priority.post')) ? config('sitemap.priority.post') : $default_priority;
+
+            $posts = array();
+            $arr = explode('.', $str);
+            if ($priority !== '-1') {
+                $posts = sitemap_post_path(null, $arr[1], 500);
+            }
+
+            $map .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+
+            foreach ($posts as $p) {
+                $map .= '<url><loc>' . $p->url . '</loc><priority>' . $priority . '</priority><lastmod>' . date('Y-m-d\TH:i:sP', $p->lastMod) . '</lastmod></url>';
+            }
+
+            $map .= '</urlset>';
+
         }
 
         $map .= '</urlset>';
@@ -3147,7 +3244,7 @@ function generate_sitemap($str)
         $priority = (config('sitemap.priority.static')) ? config('sitemap.priority.static') : $default_priority;
 
         $posts = array();
-        if ($priority !== 'false') {
+        if ($priority !== '-1') {
             $posts = sitemap_page_path();
         }
 
@@ -3165,7 +3262,7 @@ function generate_sitemap($str)
         $priority = (config('sitemap.priority.tag')) ? config('sitemap.priority.tag') : $default_priority;
 
         $posts = array();
-        if ($priority !== 'false') {
+        if ($priority !== '-1') {
             $posts = get_blog_posts();
         }
 
@@ -3202,40 +3299,42 @@ function generate_sitemap($str)
 
     } elseif ($str == 'archive.xml') {
 
-        $priorityDay = (config('sitemap.priority.archiveDay')) ? config('sitemap.priority.archiveDay') : $default_priority;
+//        $priorityDay = (config('sitemap.priority.archiveDay')) ? config('sitemap.priority.archiveDay') : $default_priority;
         $priorityMonth = (config('sitemap.priority.archiveMonth')) ? config('sitemap.priority.archiveMonth') : $default_priority;
         $priorityYear = (config('sitemap.priority.archiveYear')) ? config('sitemap.priority.archiveYear') : $default_priority;
 
-        $posts = sitemap_post_path();
-        $day = array();
+        $posts = sitemap_post_path(null, 1, null);
+//        $day = array();
         $month = array();
         $year = array();
 
         foreach ($posts as $p) {
-            $day[] = $p->archiveday;
+//            $day[] = $p->archiveday;
             $month[] = $p->archivemonth;
             $year[] = $p->archiveyear;
         }
 
-        $day = array_unique($day, SORT_REGULAR);
+//        $day = array_unique($day, SORT_REGULAR);
         $month = array_unique($month, SORT_REGULAR);
         $year = array_unique($year, SORT_REGULAR);
 
         $map .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 
-        if ($priorityDay !== 'false') {
+/*
+        if ($priorityDay !== '-1') {
             foreach ($day as $d) {
                 $map .= '<url><loc>' . $d . '</loc><priority>' . $priorityDay . '</priority></url>';
             }
         }
+*/
 
-        if ($priorityMonth !== 'false') {
+        if ($priorityMonth !== '-1') {
             foreach ($month as $m) {
                 $map .= '<url><loc>' . $m . '</loc><priority>' . $priorityMonth . '</priority></url>';
             }
         }
 
-        if ($priorityYear !== 'false') {
+        if ($priorityYear !== '-1') {
             foreach ($year as $y) {
                 $map .= '<url><loc>' . $y . '</loc><priority>' . $priorityYear . '</priority></url>';
             }
@@ -3248,9 +3347,9 @@ function generate_sitemap($str)
         $priority = (config('sitemap.priority.author')) ? config('sitemap.priority.author') : $default_priority;
 
         $author = array();
-        if ($priority !== 'false') {
+        if ($priority !== '-1') {
 
-            $posts = sitemap_post_path();
+            $posts = sitemap_post_path(null, 1, null);
 
             foreach ($posts as $p) {
                 $author[] = $p->authorUrl;
@@ -3261,7 +3360,7 @@ function generate_sitemap($str)
 
         $map .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 
-        if ($priority !== 'false') {
+        if ($priority !== '-1') {
             foreach ($author as $a) {
                 $map .= '<url><loc>' . $a . '</loc><priority>' . $priority . '</priority></url>';
             }
@@ -3274,7 +3373,7 @@ function generate_sitemap($str)
         $priority = (config('sitemap.priority.category')) ? config('sitemap.priority.category') : $default_priority;
 
         $posts = array();
-        if ($priority !== 'false') {
+        if ($priority !== '-1') {
             $posts = get_blog_posts();
         }
 
@@ -3312,7 +3411,7 @@ function generate_sitemap($str)
         $priority = (config('sitemap.priority.type')) ? config('sitemap.priority.type') : $default_priority;
 
         $posts = array();
-        if ($priority !== 'false') {
+        if ($priority !== '-1') {
             $posts = get_blog_posts();
         }
 
@@ -3453,7 +3552,9 @@ function head_contents()
     $output .= '<meta charset="utf-8" />' . "\n";
     $output .= '<meta http-equiv="X-UA-Compatible" content="IE=edge" />' . "\n";
     $output .= '<meta name="viewport" content="width=device-width, initial-scale=1" />' . "\n";
-    $output .= '<meta name="generator" content="' . $version . '" />' . "\n";
+	if (config('show.version') == 'true') {
+		$output .= '<meta name="generator" content="' . $version . '" />' . "\n";
+	}
     $output .= $favicon;
     $output .= '<link rel="sitemap" href="' . site_url() . 'sitemap.xml" />' . "\n";
     $output .= '<link rel="alternate" type="application/rss+xml" title="' . blog_title() . ' Feed" href="' . site_url() . 'feed/rss" />' . "\n";
@@ -3574,16 +3675,43 @@ function remove_html_comments($content)
 // Google recaptcha
 function isCaptcha($reCaptchaResponse)
 {
-    if (config('google.reCaptcha') != 'true') {
-        return true;
-    }
     $url = "https://www.google.com/recaptcha/api/siteverify";
     $options = array(
-        "secret" => config("google.reCaptcha.private"),
+        "secret" => config("login.protect.private"),
         "response" => $reCaptchaResponse,
         "remoteip" => $_SERVER['REMOTE_ADDR'],
     );
+
     $fileContent = @file_get_contents($url . "?" . http_build_query($options));
+    if ($fileContent === false) {
+        return false;
+    }
+    $json = json_decode($fileContent, true);
+    if ($json == false) {
+        return false;
+    }
+    return ($json['success']);
+}
+
+// Cloudflare Turnstile
+function isTurnstile($turnstileResponse)
+{
+	$public = config("login.protect.public");
+	$private = config("login.protect.private");
+    $ip = $_SERVER['REMOTE_ADDR'];
+
+    $url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+    $data = array('secret' => $private, 'response' => $turnstileResponse, 'remoteip' => $ip);
+
+    $options = array(
+        'http' => array(
+        'method' => 'POST',
+        'content' => http_build_query($data))
+    );
+
+    $stream = stream_context_create($options);
+    $fileContent = file_get_contents($url, false, $stream);
+
     if ($fileContent === false) {
         return false;
     }

@@ -1,6 +1,8 @@
 <?php
 if (!defined('HTMLY')) die('HTMLy');
 
+use PragmaRX\Google2FA\Google2FA;
+
 // Load the configuration file
 config('source', $config_file);
 
@@ -119,30 +121,83 @@ get('/index', function () {
 post('/login', function () {
 
     $proper = (is_csrf_proper(from($_REQUEST, 'csrf_token')));
+    $captcha = config('login.protect.system');
+    if (is_null($captcha) || $captcha === 'disabled') {
+        $captcha = true;
+    } elseif ($captcha === 'cloudflare') {
+        $captcha = isTurnstile(from($_REQUEST, 'cf-turnstile-response'));
+    } elseif ($captcha === 'google') {
+        $captcha = isCaptcha(from($_REQUEST, 'g-recaptcha-response'));
+    }
+
     $captcha = isCaptcha(from($_REQUEST, 'g-recaptcha-response'));
 
     $user = from($_REQUEST, 'user');
     $pass = from($_REQUEST, 'password');
-    if ($proper && $captcha && !empty($user) && !empty($pass)) {
+    $mfa_secret = user('mfa_secret', $user);
+    if ($proper && $captcha && !empty($user) && !empty($pass)) {    
+        if (!is_null($mfa_secret) && $mfa_secret !== "disabled") {
+            $mfacode = from($_REQUEST, 'mfacode');
+            $google2fa = new Google2FA();
+            if ($google2fa->verifyKey($mfa_secret, $mfacode, '1')) {
+                session($user, $pass);
+                $log = session($user, $pass);
 
-        session($user, $pass);
-        $log = session($user, $pass);
+                if (!empty($log)) {
 
-        if (!empty($log)) {
+                    config('views.root', 'system/admin/views');
 
-            config('views.root', 'system/admin/views');
+                    render('login', array(
+                        'title' => generate_title('is_default', i18n('Login')),
+                        'description' => i18n('Login') . ' ' . blog_title(),
+                        'canonical' => site_url(),
+                        'metatags' => generate_meta(null, null),
+                        'error' => '<ul>' . $log . '</ul>',
+                        'type' => 'is_login',
+                        'is_login' => true,
+                        'bodyclass' => 'in-login',
+                        'breadcrumb' => '<a href="' . site_url() . '">' . config('breadcrumb.home') . '</a> &#187; ' . i18n('Login')
+                    ));
+                }
+            } else {
+                $message['error'] = '';
+                $message['error'] .= '<li class="alert alert-danger">' . i18n('MFA_Error') . '</li>';
+                config('views.root', 'system/admin/views');
 
-            render('login', array(
-                'title' => generate_title('is_default', i18n('Login')),
-                'description' => i18n('Login') . ' ' . blog_title(),
-                'canonical' => site_url(),
-                'metatags' => generate_meta(null, null),
-                'error' => '<ul>' . $log . '</ul>',
-                'type' => 'is_login',
-                'is_login' => true,
-                'bodyclass' => 'in-login',
-                'breadcrumb' => '<a href="' . site_url() . '">' . config('breadcrumb.home') . '</a> &#187; ' . i18n('Login')
-            ));
+                render('login', array(
+                    'title' => generate_title('is_default', i18n('Login')),
+                    'description' => i18n('Login') . ' ' . blog_title(),
+                    'canonical' => site_url(),
+                    'metatags' => generate_meta(null, null),
+                    'error' => '<ul>' . $message['error'] . '</ul>',
+                    'username' => $user,
+                    'password' => $pass,
+                    'type' => 'is_login',
+                    'is_login' => true,
+                    'bodyclass' => 'in-login',
+                    'breadcrumb' => '<a href="' . site_url() . '">' . config('breadcrumb.home') . '</a> &#187; ' . i18n('Login')
+                ));
+            }
+        } else {
+            session($user, $pass);
+            $log = session($user, $pass);
+
+            if (!empty($log)) {
+
+                config('views.root', 'system/admin/views');
+
+                render('login', array(
+                    'title' => generate_title('is_default', i18n('Login')),
+                    'description' => i18n('Login') . ' ' . blog_title(),
+                    'canonical' => site_url(),
+                    'metatags' => generate_meta(null, null),
+                    'error' => '<ul>' . $log . '</ul>',
+                    'type' => 'is_login',
+                    'is_login' => true,
+                    'bodyclass' => 'in-login',
+                    'breadcrumb' => '<a href="' . site_url() . '">' . config('breadcrumb.home') . '</a> &#187; ' . i18n('Login')
+                ));
+            }
         }
     } else {
         $message['error'] = '';
@@ -376,12 +431,13 @@ post('/edit/password', function() {
         $new_password = from($_REQUEST, 'password');
         $user = $_SESSION[site_url()]['user'];
         $role = user('role', $user);
+        $mfa = user('mfa_secret', $user);
         $old_password = user('password', $username);
         if ($user === $username) {
             $file = 'config/users/' . $user . '.ini';
             if (file_exists($file)) {
                 if (!empty($new_password)) {
-                    update_user($user, $new_password, $role);
+                   update_user($user, $new_password, $role, $mfa);
                 }
             }
             $redir = site_url() . 'admin';
@@ -393,7 +449,92 @@ post('/edit/password', function() {
     } else {
         $login = site_url() . 'login';
         header("location: $login");
-    }	
+    }
+});
+
+get('/edit/mfa', function () {
+    if (login()) {
+        config('views.root', 'system/admin/views');
+        render('edit-mfa', array(
+            'title' => generate_title('is_default', i18n('config_mfa')),
+            'description' => safe_html(strip_tags(blog_description())),
+            'canonical' => site_url(),
+            'metatags' => generate_meta(null, null),
+            'type' => 'is_profile',
+            'is_admin' => true,
+            'bodyclass' => 'edit-mfa',
+            'breadcrumb' => '<a href="' . site_url() . '">' . config('breadcrumb.home') . '</a> &#187; '. i18n('config_mfa'),
+        ));
+    } else {
+        $login = site_url() . 'login';
+        header("location: $login");
+    }
+});
+
+post('/edit/mfa', function() {
+    $proper = is_csrf_proper(from($_REQUEST, 'csrf_token'));
+    if (login() && $proper) {
+        $username = from($_REQUEST, 'username');
+        $mfa_secret = from($_REQUEST, 'mfa_secret');
+        $mfacode = from($_REQUEST, 'mfacode');
+        $user = $_SESSION[site_url()]['user'];
+        $role = user('role', $user);
+        $old_password = user('password', $user);
+        $password = from($_REQUEST, 'password');
+        $message['error'] = '';
+        if ($user === $username) {
+            if (!is_null($mfa_secret) && $mfa_secret !== "disabled") {
+                $google2fa = new Google2FA();
+                if ($google2fa->verifyKey($mfa_secret, $mfacode)) {
+                    if (password_verify($password, $old_password)) {
+                        if (!empty($mfa_secret)) {
+                            update_user($user, $password, $role, $mfa_secret);
+                        }
+                    } else {
+                        $message['error'] .= '<li class="alert alert-danger">' . i18n('Pass_Error') . '</li>';
+                    }
+                } else {
+                    $message['error'] .= '<li class="alert alert-danger">' . i18n('MFA_Error') . '</li>';
+                }
+                config('views.root', 'system/admin/views');
+                render('edit-mfa', array(
+                    'title' => generate_title('is_default', i18n('config_mfa')),
+                    'description' => safe_html(strip_tags(blog_description())),
+                    'canonical' => site_url(),
+                    'metatags' => generate_meta(null, null),
+                    'error' => '<ul>' . $message['error'] . '</ul>',
+                    'type' => 'is_profile',
+                    'is_admin' => true,
+                    'bodyclass' => 'edit-mfa',
+                    'breadcrumb' => '<a href="' . site_url() . '">' . config('breadcrumb.home') . '</a> &#187; '. i18n('config_mfa'),
+                ));
+            } else {
+                if (password_verify($password, $old_password)) {
+                    update_user($user, $password, $role, 'disabled');
+                } else {
+                    $message['error'] .= '<li class="alert alert-danger">' . i18n('Pass_Error') . '</li>';
+                }
+                config('views.root', 'system/admin/views');
+                render('edit-mfa', array(
+                    'title' => generate_title('is_default', i18n('config_mfa')),
+                    'description' => safe_html(strip_tags(blog_description())),
+                    'canonical' => site_url(),
+                    'metatags' => generate_meta(null, null),
+                    'error' => '<ul>' . $message['error'] . '</ul>',
+                    'type' => 'is_profile',
+                    'is_admin' => true,
+                    'bodyclass' => 'edit-mfa',
+                    'breadcrumb' => '<a href="' . site_url() . '">' . config('breadcrumb.home') . '</a> &#187; '. i18n('config_mfa'),
+                ));    
+            }
+        } else {
+            $redir = site_url();
+            header("location: $redir");    
+        }
+    } else {
+        $login = site_url() . 'login';
+        header("location: $login");
+    }
 });
 
 // Edit the frontpage
@@ -775,6 +916,89 @@ post('/add/page', function () {
     } else {
         $redir = site_url();
         header("location: $redir");            
+    }
+});
+
+// Autosave
+post('/admin/autosave', function () {
+    if (login()) {
+        $title = $_REQUEST['title'];
+        $url = $_REQUEST['url'];
+        $content = $_REQUEST['content'];
+        $description = $_REQUEST['description'];
+        $draft = 'draft';    
+        $posttype = $_REQUEST['posttype'];
+        $autoSave = $_REQUEST['autoSave'];
+        $addEdit = $_REQUEST['addEdit'];
+        $user = $_SESSION[site_url()]['user'];
+        $role = user('role', $user);
+        if (empty($url)) {
+            $url = $title;
+        }
+        if ($addEdit == 'edit') {
+            $revertPage = '';
+            $revertPost = '';
+            $publishDraft = '';
+            $oldfile = $_REQUEST['oldfile'];
+            $destination = null;
+        }
+        if (!empty($title) && !empty($content)) {
+            if ($posttype == 'is_page') {
+                if ($role === 'editor' || $role === 'admin') {
+                    if ($addEdit == 'add') {
+                        $response = add_page($title, $url, $content, $draft, $description, $autoSave);
+                    } else {
+                        $response = edit_page($title, $url, $content, $oldfile, $revertPage, $publishDraft, $destination, $description, null, $autoSave);
+                    }
+                }
+            } elseif ($posttype == 'is_subpage') {
+                if ($role === 'editor' || $role === 'admin') {
+                    $static = $_REQUEST['parent_page'];
+                    if ($addEdit == 'add') {
+                        $response = add_sub_page($title, $url, $content, $static, $draft, $description, $autoSave);
+                    } else {
+                        $response = edit_page($title, $url, $content, $oldfile, $revertPage, $publishDraft, $destination, $description, $static, $autoSave);
+                    }
+                }
+            } else {
+                $tag = $_REQUEST['tag'];
+                $category = $_REQUEST['category'];
+                $dateTime = $_REQUEST['dateTime'];
+                if ($posttype == 'is_image') {
+                    $type = 'image';
+                    $media = $_REQUEST['pimage'];
+                } elseif ($posttype == 'is_video') {
+                    $type = 'video';
+                    $media = $_REQUEST['pvideo'];
+                } elseif ($posttype == 'is_link') {
+                    $type = 'link';
+                    $media = $_REQUEST['plink'];
+                } elseif ($posttype == 'is_quote') {
+                    $type = 'quote';
+                    $media = $_REQUEST['pquote'];
+                } elseif ($posttype == 'is_audio') {
+                    $type = 'audio';
+                    $media = $_REQUEST['paudio'];
+                } elseif ($posttype == 'is_post') {
+                    $type = 'post';
+                    $media = null;
+                }
+
+                if (!empty($title) && !empty($tag) && !empty($content)) {
+                    if ($addEdit == 'add') {
+                        $response = add_content($title, $tag, $url, $content, $user, $draft, $category, $type, $description, $media, $dateTime, $autoSave);
+                    } else {
+                        $arr = explode('/', $oldfile);
+                        if ($user === $arr[1] || $role === 'editor' || $role === 'admin') {
+                            $response = edit_content($title, $tag, $url, $content, $oldfile, $revertPost, $publishDraft, $category, $type, $destination, $description, $dateTime, $media, $autoSave);
+                        }
+                    }
+                }
+            }
+        } else {
+            $response = "No content to save.";
+        }
+        echo $response;
     }
 });
 
@@ -1666,6 +1890,76 @@ post('/admin/config/reading', function () {
 });
 
 // Show Config page
+get('/admin/config/writing', function () {
+
+    $user = $_SESSION[site_url()]['user'];
+    $role = user('role', $user);
+
+    if (login()) {
+        config('views.root', 'system/admin/views');
+        if ($role === 'admin') {
+            render('config-writing', array(
+                'title' => generate_title('is_default', i18n('Config')),
+                'description' => safe_html(strip_tags(blog_description())),
+                'canonical' => site_url(),
+                'metatags' => generate_meta(null, null),
+                'type' => 'is_admin-config',
+                'is_admin' => true,
+                'bodyclass' => 'admin-config',
+                'breadcrumb' => '<a href="' . site_url() . '">' . config('breadcrumb.home') . '</a> &#187; ' . i18n('Config')
+            ));
+        } else {
+            render('denied', array(
+                'title' => generate_title('is_default', i18n('Config')),
+                'description' => safe_html(strip_tags(blog_description())),
+                'canonical' => site_url(),
+                'metatags' => generate_meta(null, null),
+                'type' => 'is_admin-config',
+                'is_admin' => true,
+                'bodyclass' => 'denied',
+                'breadcrumb' => '<a href="' . site_url() . '">' . config('breadcrumb.home') . '</a> &#187; ' . i18n('Config')
+            ));
+        }
+    } else {
+        $login = site_url() . 'login';
+        header("location: $login");
+    }
+});
+
+// Submitted Config page data
+post('/admin/config/writing', function () {
+
+    $proper = is_csrf_proper(from($_REQUEST, 'csrf_token'));
+    if (login() && $proper) {
+        $new_config = array();
+        $new_Keys = array();
+        $user = $_SESSION[site_url()]['user'];
+        $role = user('role', $user);
+        if ($role === 'admin') {
+            foreach ($_POST as $name => $value) {
+                if (substr($name, 0, 8) == "-config-") {
+                    $name = str_replace("_", ".", substr($name, 8));
+                    if(!is_null(config($name))) {
+                        $new_config[$name] = $value;
+                    } else {
+                        $new_Keys[$name] = $value;    
+                    }
+                }
+            }
+            save_config($new_config, $new_Keys);
+            $redir = site_url() . 'admin/config/writing';
+            header("location: $redir");
+        } else {
+            $redir = site_url();
+            header("location: $redir");    
+        }
+    } else {
+        $login = site_url() . 'login';
+        header("location: $login");
+    }
+});
+
+// Show Config page
 get('/admin/config/widget', function () {
 
     $user = $_SESSION[site_url()]['user'];
@@ -1845,6 +2139,76 @@ get('/admin/config/performance', function () {
         header("location: $login");
     }
     die;
+});
+
+// Show Config page
+get('/admin/config/security', function () {
+
+    $user = $_SESSION[site_url()]['user'];
+    $role = user('role', $user);
+
+    if (login()) {
+        config('views.root', 'system/admin/views');
+        if ($role === 'admin') {
+            render('config-security', array(
+                'title' => generate_title('is_default', i18n('Config')),
+                'description' => safe_html(strip_tags(blog_description())),
+                'canonical' => site_url(),
+                'metatags' => generate_meta(null, null),
+                'type' => 'is_admin-config',
+                'is_admin' => true,
+                'bodyclass' => 'admin-config',
+                'breadcrumb' => '<a href="' . site_url() . '">' . config('breadcrumb.home') . '</a> &#187; ' . i18n('Config')
+            ));
+        } else {
+            render('denied', array(
+                'title' => generate_title('is_default', i18n('Config')),
+                'description' => safe_html(strip_tags(blog_description())),
+                'canonical' => site_url(),
+                'metatags' => generate_meta(null, null),
+                'type' => 'is_admin-config',
+                'is_admin' => true,
+                'bodyclass' => 'denied',
+                'breadcrumb' => '<a href="' . site_url() . '">' . config('breadcrumb.home') . '</a> &#187; ' . i18n('Config')
+            ));
+        }
+    } else {
+        $login = site_url() . 'login';
+        header("location: $login");
+    }
+});
+
+// Submitted Config page data
+post('/admin/config/security', function () {
+
+    $proper = is_csrf_proper(from($_REQUEST, 'csrf_token'));
+    if (login() && $proper) {
+        $new_config = array();
+        $new_Keys = array();
+        $user = $_SESSION[site_url()]['user'];
+        $role = user('role', $user);
+        if ($role === 'admin') {
+            foreach ($_POST as $name => $value) {
+                if (substr($name, 0, 8) == "-config-") {
+                    $name = str_replace("_", ".", substr($name, 8));
+                    if(!is_null(config($name))) {
+                        $new_config[$name] = $value;
+                    } else {
+                        $new_Keys[$name] = $value;    
+                    }
+                }
+            }
+            save_config($new_config, $new_Keys);
+            $redir = site_url() . 'admin/config/security';
+            header("location: $redir");
+        } else {
+            $redir = site_url();
+            header("location: $redir");    
+        }
+    } else {
+        $login = site_url() . 'login';
+        header("location: $login");
+    }
 });
 
 // Submitted Config page data

@@ -58,8 +58,10 @@ if (empty($defaultFormat)) {
   <div class="nav nav-tabs" id="nav-tab">
     <a class="nav-item nav-link" id="nav-general-tab" href="<?php echo site_url();?>admin/config"><?php echo i18n('General');?></a>
     <a class="nav-item nav-link" id="nav-profile-tab" href="<?php echo site_url();?>admin/config/reading"><?php echo i18n('Reading');?></a>
+    <a class="nav-item nav-link" id="nav-writing-tab" href="<?php echo site_url();?>admin/config/writing"><?php echo i18n('Writing');?></a>
     <a class="nav-item nav-link" id="nav-widget-tab" href="<?php echo site_url();?>admin/config/widget"><?php echo i18n('Widget');?></a>
     <a class="nav-item nav-link active" id="nav-metatags-tab" href="<?php echo site_url();?>admin/config/metatags"><?php echo i18n('Metatags');?></a>
+    <a class="nav-item nav-link" id="nav-security-tab" href="<?php echo site_url();?>admin/config/security"><?php echo i18n('Security');?></a>
     <a class="nav-item nav-link" id="nav-performance-tab" href="<?php echo site_url();?>admin/config/performance"><?php echo i18n('Performance');?></a>
     <a class="nav-item nav-link" id="nav-custom-tab" href="<?php echo site_url();?>admin/config/custom"><?php echo i18n('Custom');?></a>
   </div>  
@@ -197,12 +199,14 @@ if (empty($defaultFormat)) {
   <p><?php echo i18n('Valid_values_range_from_0_to_1.0._See');?> <a target="_blank" href="https://www.sitemaps.org/protocol.html">https://www.sitemaps.org/protocol.html</a></p>
   <?php foreach($array as $key => $value) {?>
   <?php if (stripos($key, 'sitemap.priority') !== false):?>
+    <?php if ($key !== 'sitemap.priority.archiveDay'):?>
   <div class="form-group row">
     <label for="<?php echo $key;?>" class="col-sm-2 col-form-label"><?php echo $key;?></label>
     <div class="col-sm-10">
       <input step="any" type="number" name="-config-<?php echo $key;?>" class="form-control" id="<?php echo $key;?>" value="<?php echo $value;?>">
     </div>
   </div>  
+    <?php endif;?>
   <?php endif; ?> 
   <?php } ?>
   <div class="form-group row">

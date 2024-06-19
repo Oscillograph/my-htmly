@@ -27,9 +27,9 @@
     "google.wmt.id",
     "google.analytics.id",
     "google.gtag.id",
-    "google.reCaptcha",
-    "google.reCaptcha.public",
-    "google.reCaptcha.private",
+    "login.protect.system",
+    "login.protect.public",
+    "login.protect.private",
     "posts.perpage",
     "category.perpage",
     "tag.perpage",
@@ -86,5 +86,8 @@
     "default.image",
     "favicon.image",
     "views.root",
-    "views.layout"
+    "views.layout",
+    "autosave.enable",
+    "mfa.state",
+    "show.version"
 ]

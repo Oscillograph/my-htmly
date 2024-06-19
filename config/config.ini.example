@@ -59,12 +59,16 @@ google.analytics.id = ""
 ; Google gtag analytics
 google.gtag.id = ""
 
-; Google reCaptcha
-; https://www.google.com/recaptcha/admin. Options "false" and "true"
+; Login protection system  Choose "google", "cloudflare", or "disable".
+; https://www.google.com/recaptcha/admin
+; https://developers.cloudflare.com/turnstile/
 
-google.reCaptcha = "false"
-google.reCaptcha.public = ""
-google.reCaptcha.private = ""
+login.protect.system = "disable"
+login.protect.public = ""
+login.protect.private = ""
+
+; Multi-factor authentication
+mfa.state = "false"
 
 ; Pagination, RSS, and JSON
 posts.perpage = "10"
@@ -118,13 +122,12 @@ rss.char = "200"
 views.counter = "false"
 
 ; Sitemap priorities between "0.0" and "1.0". 
-; Set "false" to disable a sitemap for the given type. (See /sitemap.xml)
+; Set "-1" (minus one) to disable a sitemap for the given type. (See /sitemap.xml)
 sitemap.priority.base = "1.0"
 sitemap.priority.post = "0.5"
 sitemap.priority.static = "0.5"
 sitemap.priority.category = "0.5"
 sitemap.priority.tag = "0.5"
-sitemap.priority.archiveDay = "0.5"
 sitemap.priority.archiveMonth = "0.5"
 sitemap.priority.archiveYear = "0.5"
 sitemap.priority.author = "0.5"
@@ -182,6 +185,12 @@ default.image = ""
 
 ; Favicon image
 favicon.image = ""
+
+; Autosave
+autosave.enable = "true"
+
+; Show HTMLy version
+show.version = "true"
 
 ; Set the theme here
 views.root = "themes/twentysixteen"

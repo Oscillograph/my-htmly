@@ -11,8 +11,10 @@ Please install and enable the INTL extension to format the date format to your l
   <div class="nav nav-tabs" id="nav-tab">
     <a class="nav-item nav-link active" id="nav-general-tab" href="<?php echo site_url();?>admin/config"><?php echo i18n('General');?></a>
     <a class="nav-item nav-link" id="nav-profile-tab" href="<?php echo site_url();?>admin/config/reading"><?php echo i18n('Reading');?></a>
+    <a class="nav-item nav-link" id="nav-writing-tab" href="<?php echo site_url();?>admin/config/writing"><?php echo i18n('Writing');?></a>
     <a class="nav-item nav-link" id="nav-widget-tab" href="<?php echo site_url();?>admin/config/widget"><?php echo i18n('Widget');?></a>
     <a class="nav-item nav-link" id="nav-metatags-tab" href="<?php echo site_url();?>admin/config/metatags"><?php echo i18n('Metatags');?></a>
+    <a class="nav-item nav-link" id="nav-security-tab" href="<?php echo site_url();?>admin/config/security"><?php echo i18n('Security');?></a>
     <a class="nav-item nav-link" id="nav-performance-tab" href="<?php echo site_url();?>admin/config/performance"><?php echo i18n('Performance');?></a>
     <a class="nav-item nav-link" id="nav-custom-tab" href="<?php echo site_url();?>admin/config/custom"><?php echo i18n('Custom');?></a>
   </div>  
@@ -152,6 +154,29 @@ Please install and enable the INTL extension to format the date format to your l
       <input type="text" name="-config-blog.copyright" class="form-control" id="blog.copyright" value="<?php echo valueMaker(config('blog.copyright'));?>" placeholder="<?php echo i18n('Copyright_Line_Placeholder');?>">
     </div>
   </div>
+
+  <div class="form-group row">
+    <label class="col-sm-2 col-form-label"><?php echo i18n('set_version_publicly');?></label>
+    <div class="col-sm-10">
+      <div class="col-sm-10">
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="-config-show.version" id="show.version1" value="true" <?php if (config('show.version') === 'true'):?>checked<?php endif;?>>
+          <label class="form-check-label" for="show.version1">
+            <?php echo i18n('Enable');?>
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="-config-show.version" id="show.version2" value="false" <?php if (config('show.version') === 'false'):?>checked<?php endif;?>>
+          <label class="form-check-label" for="show.version2">
+            <?php echo i18n('Disable');?>
+          </label>
+        </div>
+      </div>
+	  <small><em><?php echo i18n('explain_version');?></em></small>
+    </div>
+  </div>
+  <hr />
+
   <div class="form-group row">
     <div class="col-sm-10">
       <button type="submit" class="btn btn-primary"><?php echo i18n('Save_Config');?></button>

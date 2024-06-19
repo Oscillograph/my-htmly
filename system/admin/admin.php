@@ -17,13 +17,14 @@ function user($key, $user = null)
 }
 
 // Update the user
-function update_user($userName, $password, $role)
+function update_user($userName, $password, $role, $mfa_secret)
 {
     $file = 'config/users/' . $userName . '.ini';
     if (file_exists($file)) {
         file_put_contents($file, "password = " . password_hash($password, PASSWORD_DEFAULT) . "\n" .
             "encryption = password_hash\n" .
-            "role = " . $role . "\n", LOCK_EX);
+            "role = " . $role . "\n" .
+            "mfa_secret = " . $mfa_secret . "\n", LOCK_EX);
         return true;
     }
     return false;
@@ -38,7 +39,8 @@ function create_user($userName, $password, $role)
     } else {
         file_put_contents($file, "password = " . password_hash($password, PASSWORD_DEFAULT) . "\n" .
             "encryption = password_hash\n" .
-            "role = " . $role . "\n", LOCK_EX);
+            "role = " . $role . "\n" .
+			"mfa_secret = disabled\n", LOCK_EX);
         return true;
     }
 }
@@ -54,6 +56,7 @@ function session($user, $pass)
     $user_enc = user('encryption', $user);
     $user_pass = user('password', $user);
     $user_role = user('role', $user);
+    $mfa = user('mfa_secret', $user);
     
     if(is_null($user_enc) || is_null($user_pass) || is_null($user_role)) {
         return $str = '<div class="error-message"><ul><li class="alert alert-danger">' . i18n('Invalid_Error') . '</li></ul></div>';
@@ -63,7 +66,7 @@ function session($user, $pass)
         if (password_verify($pass, $user_pass)) {
             if (session_status() == PHP_SESSION_NONE) session_start();
             if (password_needs_rehash($user_pass, PASSWORD_DEFAULT)) {
-                update_user($user, $pass, $user_role);
+                update_user($user, $pass, $user_role, $mfa);
             }
             $_SESSION[site_url()]['user'] = $user;
             header('location: admin');
@@ -72,7 +75,7 @@ function session($user, $pass)
         }
     } else if (old_password_verify($pass, $user_enc, $user_pass)) {
         if (session_status() == PHP_SESSION_NONE) session_start();
-        update_user($user, $pass, $user_role);
+        update_user($user, $pass, $user_role, $mfa);
         $_SESSION[site_url()]['user'] = $user;
         header('location: admin');
     } else {
@@ -117,8 +120,12 @@ function remove_accent($str)
 }
 
 // Add content
-function add_content($title, $tag, $url, $content, $user, $draft, $category, $type, $description = null, $media = null, $dateTime = null)
+function add_content($title, $tag, $url, $content, $user, $draft, $category, $type, $description = null, $media = null, $dateTime = null, $autoSave = null)
 {
+    if (!is_null($autoSave)) {
+        $draft = 'draft';
+    }
+
     $tag = explode(',', preg_replace("/\s*,\s*/", ",", rtrim($tag, ',')));
     $tag = array_filter(array_unique($tag));
     $tagslang = "content/data/tags.lang";
@@ -235,10 +242,21 @@ function add_content($title, $tag, $url, $content, $user, $draft, $category, $ty
             file_put_contents($dir . $filename, print_r($post_content, true), LOCK_EX);
         }
 
+        if (empty($draft)) {
+            $draftFile = 'content/' . $user . '/blog/' . $category. '/draft/' . $filename;
+            if (file_exists($draftFile)) {
+                unlink($draftFile);
+            }
+        }
+
         save_tag_i18n($post_tag, $post_tagmd);
 
         rebuilt_cache('all');
         clear_post_cache($post_date, $post_tag, $post_url, $dir . $filename, $category, $type);
+
+        if (!is_null($autoSave)) {
+            return "Auto Saved";
+        }
 
         if (empty($draft)) {
             if (date('Y-m-d-H-i-s') >= $post_date) {
@@ -255,7 +273,7 @@ function add_content($title, $tag, $url, $content, $user, $draft, $category, $ty
 }
 
 // Edit content
-function edit_content($title, $tag, $url, $content, $oldfile, $revertPost, $publishDraft, $category, $type, $destination = null, $description = null, $date = null, $media = null)
+function edit_content($title, $tag, $url, $content, $oldfile, $revertPost, $publishDraft, $category, $type, $destination = null, $description = null, $date = null, $media = null, $autoSave = null)
 {
     $tag = explode(',', preg_replace("/\s*,\s*/", ",", rtrim($tag, ',')));
     $tag = array_filter(array_unique($tag));
@@ -463,6 +481,10 @@ function edit_content($title, $tag, $url, $content, $oldfile, $revertPost, $publ
             }
         }
 
+        if (!is_null($autoSave)) {
+            return "Auto Saved";
+        }
+
         if ($destination == 'post') {
             if(!empty($revertPost)) {
                 $drafturl = site_url() . 'admin/draft';
@@ -495,8 +517,12 @@ function edit_content($title, $tag, $url, $content, $oldfile, $revertPost, $publ
 }
 
 // Add static page
-function add_page($title, $url, $content, $draft, $description = null)
+function add_page($title, $url, $content, $draft, $description = null, $autoSave = null)
 {
+    if (!is_null($autoSave)) {
+        $draft = 'draft';
+    }
+
     $post_title = safe_html($title);
     $post_url = strtolower(preg_replace(array('/[^a-zA-Z0-9 \-\p{L}]/u', '/[ -]+/', '/^-|-$/'), array('', '-', ''), remove_accent($url)));
     $description = safe_html($description);
@@ -533,6 +559,10 @@ function add_page($title, $url, $content, $draft, $description = null)
                 mkdir($dir, 0775, true);
             }
             file_put_contents($dir . $filename, print_r($post_content, true), LOCK_EX);
+            $draftFile = $dirDraft . $filename;
+            if (file_exists($draftFile)) {
+                unlink($draftFile);
+            }
         } else {
             if (!is_dir($dirDraft)) {
                 mkdir($dirDraft, 0775, true);
@@ -542,7 +572,11 @@ function add_page($title, $url, $content, $draft, $description = null)
 
         rebuilt_cache('all');
         clear_page_cache($post_url);
-        
+
+        if (!is_null($autoSave)) {
+            return "Auto Saved";
+        }
+
         if (empty($draft)) {
             $redirect = site_url() . 'admin/pages';
             header("Location: $redirect");
@@ -554,8 +588,12 @@ function add_page($title, $url, $content, $draft, $description = null)
 }
 
 // Add static sub page
-function add_sub_page($title, $url, $content, $static, $draft, $description = null)
+function add_sub_page($title, $url, $content, $static, $draft, $description = null, $autoSave = null)
 {
+    if (!is_null($autoSave)) {
+        $draft = 'draft';
+    }
+
     $post = find_page($static);
     $static = pathinfo($post['current']->md, PATHINFO_FILENAME);
     $post_title = safe_html($title);
@@ -594,6 +632,10 @@ function add_sub_page($title, $url, $content, $static, $draft, $description = nu
                 mkdir($dir, 0775, true);
             }
             file_put_contents($dir . $filename, print_r($post_content, true), LOCK_EX);
+            $draftFile = $dirDraft . $filename;
+            if (file_exists($draftFile)) {
+                unlink($draftFile);
+            }
         } else {
             if (!is_dir($dirDraft)) {
                 mkdir($dirDraft, 0775, true);
@@ -603,13 +645,18 @@ function add_sub_page($title, $url, $content, $static, $draft, $description = nu
 
         rebuilt_cache('all');
         clear_page_cache($post_url);
+
+        if (!is_null($autoSave)) {
+            return "Auto Saved";
+        }
+
         $redirect = site_url() . 'admin/pages';
         header("Location: $redirect");
     }
 }
 
 // Edit static page and sub page
-function edit_page($title, $url, $content, $oldfile, $revertPage, $publishDraft, $destination = null, $description = null, $static = null)
+function edit_page($title, $url, $content, $oldfile, $revertPage, $publishDraft, $destination = null, $description = null, $static = null, $autoSave = null)
 {
     $dir = pathinfo($oldfile, PATHINFO_DIRNAME);
     $fn = explode('.', pathinfo($oldfile, PATHINFO_FILENAME));
@@ -652,7 +699,7 @@ function edit_page($title, $url, $content, $oldfile, $revertPage, $publishDraft,
                 }
             }
             unlink($oldfile);
-        } elseif(!empty($publishDraft)) {
+        } elseif (!empty($publishDraft)) {
             $newfile = dirname($dir) . '/' . $post_url . '.md';
             file_put_contents($newfile, print_r($post_content, true), LOCK_EX);
             if (empty($static)) {
@@ -662,7 +709,7 @@ function edit_page($title, $url, $content, $oldfile, $revertPage, $publishDraft,
                 }
             }
             unlink($oldfile);
-        }else { 
+        } else { 
             $newfile = $dir . '/' . $post_url . '.md';
             if ($oldfile === $newfile) {
                 file_put_contents($oldfile, print_r($post_content, true), LOCK_EX);
@@ -694,7 +741,7 @@ function edit_page($title, $url, $content, $oldfile, $revertPage, $publishDraft,
         }
         
         rebuilt_cache('all');
-        clear_page_cache($post_url);       
+        clear_page_cache($post_url);
         
         if (!empty($static)) {
             $posturl = site_url() . $static .'/'. $pu;
@@ -740,7 +787,10 @@ function edit_page($title, $url, $content, $oldfile, $revertPage, $publishDraft,
                     }
                 }                
             }
+        }
 
+        if (!is_null($autoSave)) {
+            return "Auto Saved";
         }
 
         if ($destination == 'post') {

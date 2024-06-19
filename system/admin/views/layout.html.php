@@ -29,6 +29,7 @@ if (isset($_GET['search'])) {
 }
 ?>
 <body class="hold-transition sidebar-mini">
+<div id="top"></div>
 <div class="wrapper">
 <style>.error-message ul {margin:0;padding:0;}</style>
   <!-- Navbar -->
@@ -269,6 +270,15 @@ if (isset($_GET['search'])) {
                   </p>
                 </a>
               </li>
+			  <?php if (config('mfa.state') === 'true'): ?>
+              <li class="nav-item">
+                <a href="<?php echo site_url();?>edit/mfa" class="nav-link">
+                  <p>
+                    <?php echo i18n('config_mfa');?>
+                  </p>
+                </a>
+              </li>
+			  <?php endif;?>
               <li class="nav-item">
                 <a href="<?php echo site_url();?>edit/profile" class="nav-link">
                   <p>
@@ -345,7 +355,7 @@ if (isset($_GET['search'])) {
       <small><?php echo i18n('Admin_panel_style_based_on');?> <a rel="nofollow" target="_blank" href="https://github.com/ColorlibHQ/AdminLTE">AdminLTE</a></small>
     </div>
     <!-- Default to the left -->
-    <?php echo i18n('Proudly_powered_by');?> <a href="https://www.htmly.com" target="_blank">HTMLy</a>
+    <?php echo i18n('Proudly_powered_by');?> <a href="https://www.htmly.com" target="_blank"><?php echo 'HTMLy ' . constant('HTMLY_VERSION'); ?></a>
   </footer>
 </div>
 <!-- ./wrapper -->
@@ -369,6 +379,45 @@ if (isset($_GET['search'])) {
   
 </div>
 <?php } ?>
+
+<style>
+.top-link {
+visibility: hidden;
+position: fixed;
+bottom: 60px;
+right: 30px;
+z-index: 99;
+background: #ddd;
+width: 42px;
+height: 42px;
+padding: 12px;
+border-radius: 64px;
+transition: visibility 0.5s, opacity 0.8s linear;
+border: none;
+font-size:13px;
+}
+
+.top-link:focus {
+  outline: none;
+}
+</style>
+<a href="#top" aria-label="go to top" title="Go to Top" class="top-link" id="top-link">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z"></path>
+    </svg>
+</a>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+</script>
 
 <script src="<?php echo site_url() ?>system/resources/js/bootstrap.min.js"></script>
 <script src="<?php echo site_url() ?>system/resources/js/adminlte.min.js"></script>
