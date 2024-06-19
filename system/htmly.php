@@ -130,8 +130,6 @@ post('/login', function () {
         $captcha = isCaptcha(from($_REQUEST, 'g-recaptcha-response'));
     }
 
-    $captcha = isCaptcha(from($_REQUEST, 'g-recaptcha-response'));
-
     $user = from($_REQUEST, 'user');
     $pass = from($_REQUEST, 'password');
     $mfa_secret = user('mfa_secret', $user);
