@@ -88,27 +88,23 @@ post('/admin/plugins', function ()
 
 	update_plugins_registry($plugins_setup);
 
-	if (login()) {
-		config('views.root', 'system/admin/views');
 
-		$plugins_all = plugins_get_dirs();
-		$user = $_SESSION[site_url()]['user'];
-		$role = user('role', $user);
+	// show the page
+	config('views.root', 'system/admin/views');
 
-		render('plugins', array(
-			'metatags' => generate_meta(null, null),
-			'title' => i18n('plugins') . ' : ' . i18n('plugins_setup'),
-			'plugins_all'=> $plugins_all,
-			'plugins_registry' => $plugins_registry,
-			'user' => $user,
-			'role' => $role,
-			'is_page' => true
-		));
+	$plugins_all = plugins_get_dirs();
+	$user = $_SESSION[site_url()]['user'];
+	$role = user('role', $user);
 
-	} else {
-        $login = site_url() . 'login';
-        header("location: $login");
-    } 
+	render('plugins', array(
+		'metatags' => generate_meta(null, null),
+		'title' => i18n('plugins') . ' : ' . i18n('plugins_setup'),
+		'plugins_all'=> $plugins_all,
+		'plugins_registry' => $plugins_registry,
+		'user' => $user,
+		'role' => $role,
+		'is_page' => true
+	));
 });
 
 get('/admin/plugins/install', function () 
@@ -117,6 +113,7 @@ get('/admin/plugins/install', function ()
 
 	if (login()) {
 		$plugins_all = plugins_get_dirs();
+		$plugins_zips = plugins_get_zips();
 		$user = $_SESSION[site_url()]['user'];
 		$role = user('role', $user);
 
@@ -126,9 +123,11 @@ get('/admin/plugins/install', function ()
 			'metatags' => generate_meta(null, null),
 			'title' => i18n('plugins') . ' : ' . i18n('plugins_install'),
 			'plugins_all'=> $plugins_all,
+			'plugins_zips' => $plugins_zips,
 			'plugins_registry' => $plugins_registry,
 			'user' => $user,
-			'$role' => $role,
+			'role' => $role,
+			'success' => 0,
 			'is_page' => true
 		));
 
@@ -136,6 +135,93 @@ get('/admin/plugins/install', function ()
         $login = site_url() . 'login';
         header("location: $login");
     } 
+});
+
+post('/admin/plugins/install', function () 
+{
+	$proper = is_csrf_proper(from($_REQUEST, 'csrf_token'));
+	if (!login())
+	{
+        $login = site_url() . 'login';
+        header("location: $login");
+		return;
+	}
+
+	$user = $_SESSION[site_url()]['user'];
+	$role = user('role', $user);
+	if ($role != 'admin')
+	{
+		echo 'Only admin can install plugins';
+		return;
+	}
+
+	if (!$proper)
+	{
+		echo 'CSRF attack detected.';
+		return;
+	}
+
+	global $plugins_registry;
+
+	// collect post data
+	$plugin_install = from($_REQUEST, 'plugin_install');
+	$plugin_name = '';
+
+
+	// install routine
+	$success = 0; // -1 - fail; 0 - nothing was sent; 1 - win
+
+	if ($plugin_install)
+	{
+		$success = -1;
+
+		$zip = new ZipArchive;
+		$result = $zip->open(PLUGINS_BASE_DIR . $plugin_install, ZipArchive::RDONLY);
+		if ($result)
+		{
+			$plugin_name = substr($plugin_install, 0, (strlen($plugin_install) - 4));
+			$result = $zip->extractTo(PLUGINS_BASE_DIR);
+			if ($result)
+			{
+				$success = 1;
+			}
+		}
+		$result = $zip->close();
+	}
+
+	// upload new plugins
+	$plugin_upload = [];
+	
+	if ($_FILES)
+	{
+		$plugin_upload = $_FILES['plugin_upload'];
+	}
+
+	if ($plugin_upload)
+	{
+		$filename = PLUGINS_BASE_DIR . $plugin_upload['name'];
+		move_uploaded_file($plugin_upload['tmp_name'], $filename);
+	}
+
+
+	// show the page
+	$plugins_all = plugins_get_dirs();
+	$plugins_zips = plugins_get_zips();
+
+	config('views.root', 'system/admin/views');
+
+	render('plugins-install', array(
+		'metatags' => generate_meta(null, null),
+		'title' => i18n('plugins') . ' : ' . i18n('plugins_install'),
+		'plugins_all'=> $plugins_all,
+		'plugins_zips' => $plugins_zips,
+		'plugins_registry' => $plugins_registry,
+		'plugin_name' => $plugin_name,
+		'user' => $user,
+		'role' => $role,
+		'success' => $success,
+		'is_page' => true
+	));
 });
 
 get('/admin/plugin/:static', function ($static) 

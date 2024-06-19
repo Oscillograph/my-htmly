@@ -37,6 +37,29 @@ function plugins_get_dirs()
 	return $plugins_all;
 }
 
+function plugins_get_zips()
+{
+	$plugins_zips = array();
+	$files = scandir(PLUGINS_BASE_DIR);
+	for ($i = 0; $i < count($files); ++$i)
+	{
+		if (!is_dir(PLUGINS_BASE_DIR . $files[$i]))
+		{
+			if ((substr($files[$i], -4) == '.zip'))
+			{
+				$plugin_name = substr($files[$i], 0, (strlen($files[$i]) - 4));
+				if (!is_dir(PLUGINS_BASE_DIR . $plugin_name))
+				{
+					$plugins_zips[] = $files[$i];
+				}
+			} else {
+				continue;
+			}
+		}
+	}
+	return $plugins_zips;
+}
+
 function plugin_register($name, $obj = null)
 {
 	global $plugins_registry;
