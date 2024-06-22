@@ -9,7 +9,7 @@
     <meta name="description" content="<?php echo $description; ?>"/>
 	<meta name="keywords" content="<?php echo adv_blog_keywords(); ?>"/>
     <link rel="canonical" href="<?php echo $canonical; ?>" />
-    <link rel="icon" type="image/png" href="<?php echo theme_path();?>img/favicon.png" />
+<!--    <link rel="icon" type="image/png" href="<?php echo theme_path();?>img/favicon.png" />-->
     <?php echo $metatags;?>
     <link rel="stylesheet" id="genericons-css"  href="<?php echo theme_path();?>genericons/genericons.css" type="text/css" media="all" />
 	<style>

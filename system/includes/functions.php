@@ -3237,8 +3237,6 @@ function generate_sitemap($str)
 
         }
 
-        $map .= '</urlset>';
-
     } elseif ($str == 'static.xml') {
 
         $priority = (config('sitemap.priority.static')) ? config('sitemap.priority.static') : $default_priority;
