@@ -42,6 +42,25 @@
     </div>
   </div>
   <div class="form-group row">
+    <label for="views.counter" class="col-sm-2 col-form-label"><?php echo i18n('Views');?></label>
+    <div class="col-sm-10">
+      <div class="col-sm-10">
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="-config-views.counter" id="views.counter.off" value="true" <?php if (config('views.counter') === 'true'):?>checked<?php endif;?>>
+          <label class="form-check-label" for="views.counter.off">
+            <?php echo i18n('Enable');?>
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="-config-views.counter" id="views.counter.off" value="false" <?php if (config('views.counter') === 'false'):?>checked<?php endif;?>>
+          <label class="form-check-label" for="views.counter.off">
+            <?php echo i18n('Disable');?>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="form-group row">
     <label class="col-sm-2 col-form-label"><?php echo i18n('Cache_timestamp');?></label>
     <div class="col-sm-10">
       <div class="col-sm-10">
