@@ -192,6 +192,9 @@ autosave.enable = "true"
 ; Show HTMLy version
 show.version = "true"
 
+; Thumbnail width
+thumbnail_width = "320"
+
 ; Set the theme here
 views.root = "themes/twentysixteen"
 
