@@ -49,39 +49,45 @@ textarea {
 <input type='hidden' id='command'  name='command' value='edit'>
 <input type='hidden' id='description' name='description' value=''>
 <input type='hidden' id='current-path' name='current-path' value='<?php echo $path; ?>'>
-<input type='hidden' id='save' value='false'>
+<input type='hidden' id='save' name ='save' value='false'>
 <hr>
 <div class='toolbar'>
-	<a href='admin/plugins/file-manager' onclick='javascript: return submitForm();'><< Назад</a><br>
+	<a href='admin/plugins/file-manager' onclick='javascript: return submitForm(false);'><< Назад</a><br>
 	Открыт файл:<br> <?php echo $path; ?><br>
 </div>
 
 <div>
-	<textarea rows=15 name='content'><?php echo str_replace('<', '&lt;', str_replace('>', '&gt;', str_replace('&', '&amp;', file_get_contents($path)))); ?></textarea>
+	<textarea rows=15 id='tinymce' name='content'><?php echo htmlspecialchars(file_get_contents($path)); ?></textarea>
 </div>
 <div>
-	<input type='submit' value='Сохранить'>
+	<input type='button' value='Сохранить' onclick='javascript: return submitForm(true);'>
 </div>
 
 <script type='text/javascript'>
-function submitForm()
+function submitForm(btn)
 {
 	form = document.getElementsByTagName('form')[1];
 
-	// get old path
-	current_path = document.getElementById('current-path').getAttribute('value');
-	current_path = current_path.replace(/\\/gi, "/"); // widndows-specific
-
-	// make a new path of it
-	path_elements = current_path.split('/');
-	new_path = path_elements[0]; 
-	for (i = 1; i < (path_elements.length - 1); ++i)
+	// confirm save
+	if (btn)
 	{
-		new_path += '/' + path_elements[i];
-	}
+		document.getElementById('save').setAttribute('value', 'true');
+	} else {
+		// get old path
+		current_path = document.getElementById('current-path').getAttribute('value');
+		current_path = current_path.replace(/\\/gi, "/"); // widndows-specific
 
-	//set new path
-	document.getElementById('current-path').setAttribute('value', new_path);
+		// make a new path of it
+		path_elements = current_path.split('/');
+		new_path = path_elements[0]; 
+		for (i = 1; i < (path_elements.length - 1); ++i)
+		{
+			new_path += '/' + path_elements[i];
+		}
+
+		//set new path
+		document.getElementById('current-path').setAttribute('value', new_path);
+	}
 
 	// submit the form
 	form.submit();

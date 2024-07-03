@@ -29,11 +29,11 @@ class Plugin_FileManager extends Plugin
 ////////// 2) selection via checkboxes and/or clicks to certain places
 ////////// 3) move up/down using names of directories as links ("..", "certain-name123")
 
-		if ($this->mode === 'browser')
+		if (($this->mode === 'browser') && is_dir($this->path))
 		{
 			$this->view_form($this->path);
 		}
-		if ($this->mode === 'editor')
+		if (($this->mode === 'editor') || !is_dir($this->path))
 		{
 			$this->view_editor($this->path);
 		}
@@ -134,12 +134,12 @@ reswitch_command:
 							$this->mode = 'editor';
 						}
 					} else {
-						if (from($_REQUEST, 'saved') == 'true')
+						if (from($_REQUEST, 'save') == 'true')
 						{
 							file_put_contents($this->path, $_POST['content']);
+						} else {
+							$this->mode = 'browser';
 						}
-
-						$this->mode = 'browser';
 					}
 				}
 				break;

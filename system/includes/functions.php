@@ -226,7 +226,7 @@ function scan_images() {
     static $_images = array();
     if (empty($_images)) {
         $tmp = array();
-        $tmp = glob('content/images/*', GLOB_NOSORT);
+        $tmp = array_filter(glob('content/images/*', GLOB_NOSORT), 'is_file');
         if (is_array($tmp)) {
             foreach ($tmp as $file) {
                 $_images[] = pathinfo($file);
@@ -1655,7 +1655,7 @@ function recent_tag($tag, $count = null, $custom = null)
     }
 
     $dir = 'cache/widget';
-    $filename = 'cache/widget/recent.' . $tag . '.cache';
+    $filename = 'cache/widget/recent.tag.' . $tag . '.cache';
     $tmp = array();
     $posts = array();
     $recent = '';
@@ -2414,7 +2414,7 @@ function get_thumbnail($text, $url = null)
 }
 
 // Get image from post and Youtube thumbnail.
-function get_image($text)
+function get_image($text, $width = null, $height = null)
 {
     libxml_use_internal_errors(true);
     $dom = new DOMDocument();
@@ -2424,7 +2424,11 @@ function get_image($text)
     if ($imgTags->length > 0) {
         $imgElement = $imgTags->item(0);
         $imgSource = $imgElement->getAttribute('src');
-        return $imgSource;
+        if(is_null($width)) {
+            return $imgSource;
+        } else {
+            return create_thumb($imgSource, $width, $height);
+        }
     } elseif ($vidTags->length > 0) {
         $vidElement = $vidTags->item(0);
         $vidSource = $vidElement->getAttribute('src');
@@ -3704,6 +3708,7 @@ function isTurnstile($turnstileResponse)
     $options = array(
         'http' => array(
         'method' => 'POST',
+        'header' => 'Content-Type: application/x-www-form-urlencoded',
         'content' => http_build_query($data))
     );
 
