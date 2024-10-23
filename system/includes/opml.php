@@ -1,4 +1,5 @@
 <?php
+namespace myHTMLy;
 
 class opml
 {

@@ -1,4 +1,4 @@
-<?php if (!defined('HTMLY')) die('HTMLy'); ?>
+<?php namespace myHTMLy; if (!defined('HTMLY')) die('HTMLy'); ?>
 <?php
 $desc = get_category_info(null);
 ?>

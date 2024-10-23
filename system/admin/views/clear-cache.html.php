@@ -1,4 +1,4 @@
-<?php if (!defined('HTMLY')) die('HTMLy'); ?>
+<?php namespace myHTMLy; if (!defined('HTMLY')) die('HTMLy'); ?>
 <?php
 
 foreach (glob('cache/index/*.txt', GLOB_NOSORT) as $file) {

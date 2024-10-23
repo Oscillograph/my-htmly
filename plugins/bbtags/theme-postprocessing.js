@@ -49,10 +49,28 @@ tagName = /\[boxc="?([\u0000-\uFFFF]+?)"?\]([\u0000-\uFFFF]+?)\[\/boxc\]/gi;
 tagContent = '<center><div class="sidebar"><div class="header">$1</div><div class="sidebar-content">$2</div></div></center>';
 processTag(tagName, tagContent);
 
+
 // img - clickable image box with description
 tagName = /\[img="?([\u0000-\uFFFF]+?)"?\]([\u0000-\uFFFF]*?)\[\/img\]/gi;
 tagContent = '<table class="sidebar" style="border: 1px dashed #ffff00"><tr><td><a href="$1" target="_blank"><img src="$1" style="width: 100%"></a><hr></td></tr><tr><td><div class="sidebar-content" style="font-size: 0.75em">$2</div></td></tr></table>';
 processTag(tagName, tagContent);
+
+// img - clickable thumbnail image box with description
+tagName = /\[img="?([\u0000-\uFFFF]+?)"? thumbnail="?([\u0000-\uFFFF]+?)"?\]([\u0000-\uFFFF]*?)\[\/img\]/gi;
+tagContent = '<table class="sidebar" style="border: 1px dashed #ffff00"><tr><td><a href="$1" target="_blank"><img src="$2" style="width: 100%"></a><hr></td></tr><tr><td><div class="sidebar-content" style="font-size: 0.75em">$3</div></td></tr></table>';
+processTag(tagName, tagContent);
+
+/*
+// img - clickable image box with description
+tagName = /\[img="?([\u0000-\uFFFF]+?)"?\]([\u0000-\uFFFF]*?)\[\/img\]/gi;
+tagContent = '<div class="gbox" style="border: 1px dashed #ffff00; display: inline-block; max-width: 300px"><a href="$1" target="_blank"><img src="$1" style="width: 100%"></a><hr><div class="gbox-content" style="font-size: 0.75em">$2</div></div>';
+processTag(tagName, tagContent);
+
+// img - clickable thumbnail image box with description
+tagName = /\[img="?([\u0000-\uFFFF]+?)"? thumbnail="?([\u0000-\uFFFF]+?)"?\]([\u0000-\uFFFF]*?)\[\/img\]/gi;
+tagContent = '<div class="gbox" style="border: 1px dashed #ffff00; display: inline-block; max-width: 300px"><a href="$1" target="_blank"><img src="$2" style="width: 100%"></a><hr><div class="gbox-content" style="font-size: 0.75em">$3</div></div>';
+processTag(tagName, tagContent);
+*/
 
 // quote - quote from someone
 tagName = /\[quote="?([\u0000-\uFFFF]+?)"?\]([\u0000-\uFFFF]+?)\[\/quote\]/gi;

@@ -16,26 +16,14 @@ class ComposerStaticInitd88c6c25320034df85dd42f1462fbda7
     );
 
     public static $prefixLengthsPsr4 = array (
-        'v' => 
-        array (
-            'voku\\' => 5,
-        ),
         'P' => 
         array (
             'PragmaRX\\Google2FA\\' => 19,
             'ParagonIE\\ConstantTime\\' => 23,
         ),
-        'M' => 
-        array (
-            'Michelf\\' => 8,
-        ),
         'K' => 
         array (
             'Kanti\\' => 6,
-        ),
-        'D' => 
-        array (
-            'DASPRiD\\Enum\\' => 13,
         ),
         'C' => 
         array (
@@ -48,11 +36,6 @@ class ComposerStaticInitd88c6c25320034df85dd42f1462fbda7
     );
 
     public static $prefixDirsPsr4 = array (
-        'voku\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/voku/portable-ascii/src/voku',
-            1 => __DIR__ . '/..' . '/voku/stop-words/src/voku',
-        ),
         'PragmaRX\\Google2FA\\' => 
         array (
             0 => __DIR__ . '/..' . '/pragmarx/google2fa/src',
@@ -61,17 +44,9 @@ class ComposerStaticInitd88c6c25320034df85dd42f1462fbda7
         array (
             0 => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src',
         ),
-        'Michelf\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/michelf/php-markdown/Michelf',
-        ),
         'Kanti\\' => 
         array (
             0 => __DIR__ . '/..' . '/kanti/hub-updater/src',
-        ),
-        'DASPRiD\\Enum\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/dasprid/enum/src',
         ),
         'Composer\\CaBundle\\' => 
         array (
@@ -165,22 +140,9 @@ class ComposerStaticInitd88c6c25320034df85dd42f1462fbda7
         'BaconQrCode\\Writer' => __DIR__ . '/..' . '/bacon/bacon-qr-code/src/Writer.php',
         'Composer\\CaBundle\\CaBundle' => __DIR__ . '/..' . '/composer/ca-bundle/src/CaBundle.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
-        'DASPRiD\\Enum\\AbstractEnum' => __DIR__ . '/..' . '/dasprid/enum/src/AbstractEnum.php',
-        'DASPRiD\\Enum\\EnumMap' => __DIR__ . '/..' . '/dasprid/enum/src/EnumMap.php',
-        'DASPRiD\\Enum\\Exception\\CloneNotSupportedException' => __DIR__ . '/..' . '/dasprid/enum/src/Exception/CloneNotSupportedException.php',
-        'DASPRiD\\Enum\\Exception\\ExceptionInterface' => __DIR__ . '/..' . '/dasprid/enum/src/Exception/ExceptionInterface.php',
-        'DASPRiD\\Enum\\Exception\\ExpectationException' => __DIR__ . '/..' . '/dasprid/enum/src/Exception/ExpectationException.php',
-        'DASPRiD\\Enum\\Exception\\IllegalArgumentException' => __DIR__ . '/..' . '/dasprid/enum/src/Exception/IllegalArgumentException.php',
-        'DASPRiD\\Enum\\Exception\\MismatchException' => __DIR__ . '/..' . '/dasprid/enum/src/Exception/MismatchException.php',
-        'DASPRiD\\Enum\\Exception\\SerializeNotSupportedException' => __DIR__ . '/..' . '/dasprid/enum/src/Exception/SerializeNotSupportedException.php',
-        'DASPRiD\\Enum\\Exception\\UnserializeNotSupportedException' => __DIR__ . '/..' . '/dasprid/enum/src/Exception/UnserializeNotSupportedException.php',
-        'DASPRiD\\Enum\\NullValue' => __DIR__ . '/..' . '/dasprid/enum/src/NullValue.php',
         'Kanti\\CacheOneFile' => __DIR__ . '/..' . '/kanti/hub-updater/src/CacheOneFile.php',
         'Kanti\\HelperClass' => __DIR__ . '/..' . '/kanti/hub-updater/src/HelperClass.php',
         'Kanti\\HubUpdater' => __DIR__ . '/..' . '/kanti/hub-updater/src/HubUpdater.php',
-        'Michelf\\Markdown' => __DIR__ . '/..' . '/michelf/php-markdown/Michelf/Markdown.php',
-        'Michelf\\MarkdownExtra' => __DIR__ . '/..' . '/michelf/php-markdown/Michelf/MarkdownExtra.php',
-        'Michelf\\MarkdownInterface' => __DIR__ . '/..' . '/michelf/php-markdown/Michelf/MarkdownInterface.php',
         'ParagonIE\\ConstantTime\\Base32' => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src/Base32.php',
         'ParagonIE\\ConstantTime\\Base32Hex' => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src/Base32Hex.php',
         'ParagonIE\\ConstantTime\\Base64' => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src/Base64.php',
@@ -214,9 +176,6 @@ class ComposerStaticInitd88c6c25320034df85dd42f1462fbda7
         'Suin\\RSSWriter\\ItemInterface' => __DIR__ . '/..' . '/suin/php-rss-writer/src/Suin/RSSWriter/ItemInterface.php',
         'Suin\\RSSWriter\\SimpleXMLElement' => __DIR__ . '/..' . '/suin/php-rss-writer/src/Suin/RSSWriter/SimpleXMLElement.php',
         'URLify' => __DIR__ . '/..' . '/jbroadway/urlify/URLify.php',
-        'voku\\helper\\ASCII' => __DIR__ . '/..' . '/voku/portable-ascii/src/voku/helper/ASCII.php',
-        'voku\\helper\\StopWords' => __DIR__ . '/..' . '/voku/stop-words/src/voku/helper/StopWords.php',
-        'voku\\helper\\StopWordsLanguageNotExists' => __DIR__ . '/..' . '/voku/stop-words/src/voku/helper/StopWordsLanguageNotExists.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

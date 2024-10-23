@@ -1,4 +1,4 @@
-<?php if (!defined('HTMLY')) die('HTMLy'); ?>
+<?php namespace myHTMLy; if (!defined('HTMLY')) die('HTMLy'); ?>
 <?php
 if (isset($_GET['destination'])) {
     $destination = _h($_GET['destination']);

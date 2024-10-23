@@ -200,3 +200,14 @@ views.root = "themes/twentysixteen"
 
 ; Framework config. No need to edit.
 views.layout = "layout"
+
+; Export to social networks
+export.phpbb.enable = "false"
+export.phpbb.url = ""
+export.phpbb.forumid = "0"
+export.phpbb.userid = "1"
+export.phpbb.serverpath = ""
+
+export.telegram.enable = "false"
+export.telegram.token = ""
+export.telegram.channelid = ""

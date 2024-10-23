@@ -1,4 +1,4 @@
-<?php if (!defined('HTMLY')) die('HTMLy'); ?>
+<?php namespace myHTMLy; if (!defined('HTMLY')) die('HTMLy'); ?>
 <ul class="nav nav-tabs">
     <li class="nav-item">
         <a class="nav-link" aria-current="page" href="<?php echo $static->url;?>"><?php echo i18n('View');?></a>

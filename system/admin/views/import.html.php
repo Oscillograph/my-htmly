@@ -1,4 +1,4 @@
-<?php if (!defined('HTMLY')) die('HTMLy'); ?>
+<?php namespace myHTMLy; if (!defined('HTMLY')) die('HTMLy'); ?>
 <?php if (isset($error)) { ?>
     <div class="error-message"><?php echo $error ?></div>
 <?php } ?>

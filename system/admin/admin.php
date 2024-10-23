@@ -1,4 +1,6 @@
 <?php
+namespace myHTMLy;
+
 if (!defined('HTMLY')) die('HTMLy');
 
 // use \Michelf\MarkdownExtra;
@@ -116,7 +118,7 @@ function is_csrf_proper($csrf_token)
 // Clean URLs
 function remove_accent($str)
 {
-    return URLify::downcode($str);
+    return \URLify::downcode($str);
 }
 
 // Add content
@@ -204,7 +206,8 @@ function add_content($title, $tag, $url, $content, $user, $draft, $category, $ty
         if (!empty($description)) {        
             $post_description = "\n<!--d " . $description . " d-->";
         } else {
-            $post_description = "\n<!--d " . get_description($content) . " d-->";
+			$description = get_description($content);
+            $post_description = "\n<!--d " . $description . " d-->";
         }            
     } else {
         $post_description = "";
@@ -261,6 +264,8 @@ function add_content($title, $tag, $url, $content, $user, $draft, $category, $ty
         if (empty($draft)) {
             if (date('Y-m-d-H-i-s') >= $post_date) {
                 $redirect = site_url() . 'admin/mine';
+                export_news_to_socials($title, $description, site_url().((config('permalink.type') == 'post') ? 'post/' : date('Y/m', strtotime($dateTime)) ).'/'.$post_url, $post_content);
+                file_put_contents($dir . $filename, print_r($post_content, true), LOCK_EX);
             } else {
                 $redirect = site_url() . 'admin/scheduled';
             }
@@ -348,7 +353,8 @@ function edit_content($title, $tag, $url, $content, $oldfile, $revertPost, $publ
         if (!empty($description)) {        
             $post_description = "\n<!--d " . $description . " d-->";
         } else {
-            $post_description = "\n<!--d " . get_description($content) . " d-->";
+			$description = get_description($content);
+            $post_description = "\n<!--d " . $description . " d-->";
         }            
     } else {
         $post_description = "";
@@ -440,13 +446,13 @@ function edit_content($title, $tag, $url, $content, $oldfile, $revertPost, $publ
         if(!empty($publishDraft)) {
             $dt = $olddate;
             $t = str_replace('-', '', $dt);
-            $time = new DateTime($t);
+            $time = new \DateTime($t);
             $timestamp = $time->format("Y-m-d");
         } else {
             $fn = explode('_', pathinfo($oldfile, PATHINFO_FILENAME));
             $dt = $fn[0];
             $t = str_replace('-', '', $dt);
-            $time = new DateTime($t);
+            $time = new \DateTime($t);
             $timestamp = $time->format("Y-m-d");
         }
 
@@ -500,6 +506,8 @@ function edit_content($title, $tag, $url, $content, $oldfile, $revertPost, $publ
         } else {
             if(!empty($publishDraft)) {
                 if (date('Y-m-d-H-i-s') >= $olddate) { 
+                    export_news_to_socials($title, $description, $posturl, $post_content);
+                    file_put_contents($newfile, print_r($post_content, true), LOCK_EX);
                     header("Location: $posturl");
                 } else {
                     $schurl = site_url() . 'admin/scheduled';
@@ -1385,7 +1393,7 @@ function get_feed($feed_url, $credit)
             } else {
                 return $str = '<li>' . i18n('Cannot_read_feed_content') . '</li>';
             }
-            $time = new DateTime($entry->pubDate);
+            $time = new \DateTime($entry->pubDate);
             $timestamp = $time->format("Y-m-d H:i:s");
             $time = strtotime($timestamp);
             $tags = $entry->category;

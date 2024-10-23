@@ -1,4 +1,6 @@
 <?php
+namespace myHTMLy;
+
 if (!defined('PHP_VERSION_ID') || PHP_VERSION_ID < 50300) {
     error(500, 'dispatch requires at least PHP 5.3 to run.');
 }
@@ -294,7 +296,9 @@ function client_ip()
     return $_SERVER['REMOTE_ADDR'];
 }
 
-function redirect(/* $code_or_path, $path_or_cond, $cond */)
+function redirect(
+//
+)
 {
     $argv = func_get_args();
     $argc = count($argv);

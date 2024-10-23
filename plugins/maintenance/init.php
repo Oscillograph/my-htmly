@@ -1,4 +1,5 @@
 <?php
+namespace myHTMLy;
 
 /* Logic is this:
 Admin:

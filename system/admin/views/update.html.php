@@ -1,4 +1,4 @@
-<?php if (!defined('HTMLY')) die('HTMLy'); ?>
+<?php namespace myHTMLy; if (!defined('HTMLY')) die('HTMLy'); ?>
 <?php
  
 use \Kanti\HubUpdater;
@@ -6,7 +6,7 @@ use \Kanti\HubUpdater;
 $CSRF = get_csrf();
         
 $updater = new HubUpdater(array(
-    'name' => 'danpros/htmly',
+    'name' => 'Oscillograph/my-htmly',
     'prerelease' => !!config("prerelease"),
 ));
 
@@ -18,13 +18,13 @@ if (defined("JSON_PRETTY_PRINT")) {
     file_put_contents(
         'cache/installedVersion.json',
         json_encode(array(
-            "tag_name" => constant('HTMLY_VERSION')
+            "tag_name" => constant('MYHTMLY_VERSION')
         ), JSON_PRETTY_PRINT), LOCK_EX);
 } else {
     file_put_contents(
         'cache/installedVersion.json',
         json_encode(array(
-            "tag_name" => constant('HTMLY_VERSION')
+            "tag_name" => constant('MYHTMLY_VERSION')
         )), LOCK_EX
     );
 }
@@ -40,7 +40,7 @@ if (empty($updater->getNewestInfo())) {
         echo '<p>Version: <strong>'. $info['tag_name'] .'</strong></p>';
         echo '<h5>Release Notes</h5>';
         echo '<div>';
-        echo \Michelf\MarkdownExtra::defaultTransform($info['body']);
+        echo str_replace("\n", '<br>', $info['body']);
         echo '</div>';
         echo '<p><strong>Important:</strong> Please always backup your files before upgrading to newer version.</p>';
         echo '<p><a class="btn btn-primary" href="' . site_url() . 'admin/update/now/' . $CSRF . '" alt="' . $info['name'] . '">'.i18n('Update_to').' '. $info['tag_name'] . ' '.i18n('now').'</a></p>';
@@ -51,7 +51,7 @@ if (empty($updater->getNewestInfo())) {
         echo '<p>Installed Version: <strong>'. $info['tag_name'] .'</strong></p>';
         echo '<h5>Release Notes: </h5>';
         echo '<div>';
-        echo \Michelf\MarkdownExtra::defaultTransform($info['body']);
+        echo $info['body'];
         echo '</div>';
         echo '<p><a class="btn btn-primary" target="_blank" href="' . $info['html_url'] . '">Read on Github</a></p>';
     }

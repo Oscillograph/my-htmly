@@ -1,4 +1,4 @@
-<?php if (!defined('HTMLY')) die('HTMLy'); ?>
+<?php namespace myHTMLy; if (!defined('HTMLY')) die('HTMLy'); ?>
 <?php
 if (isset($p->file)) {
     $file_path = pathinfo($p->file);
@@ -43,7 +43,7 @@ $category = $cat[3];
 
 $dt = $oldurl[0];
 $t = str_replace('-', '', $dt);
-$time = new DateTime($t);
+$time = new \DateTime($t);
 $timestamp = $time->format("Y-m-d H:i:s");
 // The post date
 $postdate = strtotime($timestamp);

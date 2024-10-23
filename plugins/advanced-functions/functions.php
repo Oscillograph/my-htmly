@@ -1,4 +1,5 @@
 <?php
+namespace myHTMLy;
 
 // Return category list
 function adv_category_list($custom = null) 
@@ -145,7 +146,7 @@ function adv_head_contents()
 {
     $output = '';
     $wmt_id = config('google.wmt.id');
-    $version = 'HTMLy ' . constant('HTMLY_VERSION');
+    $version = 'myHTMLy ' . constant('MYHTMLY_VERSION') . ' (heavily based on ' . 'HTMLy ' . constant('HTMLY_VERSION') . ')';
     $favicon = config('favicon.image');
     if (empty($favicon)) {
         $favicon = '<link rel="icon" type="image/png" href="' . site_url() . 'favicon.png" />' . "\n";
@@ -156,7 +157,9 @@ function adv_head_contents()
     $output .= '<meta charset="utf-8" />' . "\n";
     $output .= '<meta http-equiv="X-UA-Compatible" content="IE=edge" />' . "\n";
 //    $output .= '<meta name="viewport" content="width=device-width, initial-scale=1" />' . "\n";
-    $output .= '<meta name="generator" content="' . $version . '" />' . "\n";
+	if (config('show.version') == 'true') {
+		$output .= '<meta name="generator" content="' . $version . '" />' . "\n";
+	}
     $output .= $favicon;
     $output .= '<link rel="sitemap" href="' . site_url() . 'sitemap.xml" />' . "\n";
     $output .= '<link rel="alternate" type="application/rss+xml" title="' . blog_title() . ' Feed" href="' . site_url() . 'feed/rss" />' . "\n";
@@ -189,6 +192,24 @@ function adv_save_config($filename, $data = array(), $new = array())
     }
     $string = rtrim($string);
     return file_put_contents($filename, $string, LOCK_EX);
+}
+
+// Get tag inside the markdown files
+function adv_get_content_tags($tag, $string, $alt = null)
+{
+    $reg = '/\<!--' . $tag . '(.+)' . $tag . '--\>/';
+    $result = array();
+    if (preg_match_all($reg, $string, $result)) {
+		$results_total = sizeof($result[1]);
+		for ($i = 0; $i < $results_total; ++$i)
+		{
+			if (isset($result[1][$i])) {
+				$result[1][$i] = trim($result[1][$i]);
+				return $result[1];
+			}
+		}
+    }
+    return $alt;
 }
 
 ?>

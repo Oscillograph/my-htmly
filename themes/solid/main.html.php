@@ -1,4 +1,4 @@
-<?php if (!defined('HTMLY')) die('HTMLy'); ?>
+<?php namespace myHTMLy; if (!defined('HTMLY')) die('HTMLy'); ?>
 <?php if (isset($is_category)):?>
     <header class="page-header">
 		<span class="paper-title"><?php echo i18n('Category');?>: <?php echo $category->title;?></span>

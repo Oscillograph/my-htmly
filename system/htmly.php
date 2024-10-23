@@ -1,4 +1,6 @@
 <?php
+namespace myHTMLy;
+
 if (!defined('HTMLY')) die('HTMLy');
 
 use PragmaRX\Google2FA\Google2FA;
@@ -1958,6 +1960,76 @@ post('/admin/config/writing', function () {
 });
 
 // Show Config page
+get('/admin/config/export', function () {
+
+    $user = $_SESSION[site_url()]['user'];
+    $role = user('role', $user);
+
+    if (login()) {
+        config('views.root', 'system/admin/views');
+        if ($role === 'admin') {
+            render('config-export', array(
+                'title' => generate_title('is_default', i18n('Config')),
+                'description' => safe_html(strip_tags(blog_description())),
+                'canonical' => site_url(),
+                'metatags' => generate_meta(null, null),
+                'type' => 'is_admin-config',
+                'is_admin' => true,
+                'bodyclass' => 'admin-config',
+                'breadcrumb' => '<a href="' . site_url() . '">' . config('breadcrumb.home') . '</a> &#187; ' . i18n('Config')
+            ));
+        } else {
+            render('denied', array(
+                'title' => generate_title('is_default', i18n('Config')),
+                'description' => safe_html(strip_tags(blog_description())),
+                'canonical' => site_url(),
+                'metatags' => generate_meta(null, null),
+                'type' => 'is_admin-config',
+                'is_admin' => true,
+                'bodyclass' => 'denied',
+                'breadcrumb' => '<a href="' . site_url() . '">' . config('breadcrumb.home') . '</a> &#187; ' . i18n('Config')
+            ));
+        }
+    } else {
+        $login = site_url() . 'login';
+        header("location: $login");
+    }
+});
+
+// Submitted Config page data
+post('/admin/config/export', function () {
+
+    $proper = is_csrf_proper(from($_REQUEST, 'csrf_token'));
+    if (login() && $proper) {
+        $new_config = array();
+        $new_Keys = array();
+        $user = $_SESSION[site_url()]['user'];
+        $role = user('role', $user);
+        if ($role === 'admin') {
+            foreach ($_POST as $name => $value) {
+                if (substr($name, 0, 8) == "-config-") {
+                    $name = str_replace("_", ".", substr($name, 8));
+                    if(!is_null(config($name))) {
+                        $new_config[$name] = $value;
+                    } else {
+                        $new_Keys[$name] = $value;    
+                    }
+                }
+            }
+            save_config($new_config, $new_Keys);
+            $redir = site_url() . 'admin/config/export';
+            header("location: $redir");
+        } else {
+            $redir = site_url();
+            header("location: $redir");    
+        }
+    } else {
+        $login = site_url() . 'login';
+        header("location: $login");
+    }
+});
+
+// Show Config page
 get('/admin/config/widget', function () {
 
     $user = $_SESSION[site_url()]['user'];
@@ -3095,7 +3167,7 @@ get('/type/:type', function ($type) {
 
     $total = get_typecount($type);
     
-    $ttype = new stdClass;
+    $ttype = new \stdClass;
     $ttype->title = ucfirst($type);
     $ttype->url = site_url() . 'type/' . strtolower($type);
     $ttype->count = $total;
@@ -3150,7 +3222,7 @@ get('/type/:type/feed', function ($type) {
     header('Content-Type: application/rss+xml');
     
     $posts = get_type($type, 1, config('rss.count'));
-    $data = new stdClass;
+    $data = new \stdClass;
     $data->title = ucfirst($type);
     $data->url = site_url() . 'type/' . strtolower($type);
     $data->body = i18n('Posts_with_type') . ' ' . ucfirst($type) . ' ' . i18n('by') . ' ' . blog_title();
@@ -3180,7 +3252,7 @@ get('/tag/:tag', function ($tag) {
 
     $total = get_tagcount($tag);
         
-    $ttag = new stdClass;
+    $ttag = new \stdClass;
     $ttag->title = tag_i18n($tag);
     $ttag->url = site_url() . 'tag/' . strtolower($tag);
     $ttag->count = $total;
@@ -3235,7 +3307,7 @@ get('/tag/:tag/feed', function ($tag) {
     header('Content-Type: application/rss+xml');
     
     $posts = get_tag($tag, 1, config('rss.count'));
-    $data = new stdClass;
+    $data = new \stdClass;
     $data->title = tag_i18n($tag);
     $data->url = site_url() . 'tag/' . strtolower($tag);
     $data->body = i18n('All_posts_tagged') . ' ' . tag_i18n($tag) . ' ' . i18n('by') . ' ' . blog_title();
@@ -3281,7 +3353,7 @@ get('/archive/:req', function ($req) {
         $timestamp = $req;
     }
     
-    $tarchive = new stdClass;
+    $tarchive = new \stdClass;
     $tarchive->title = $timestamp;
     $tarchive->url = site_url() . 'archive/' . $req;
     $tarchive->count = $total;
@@ -3342,7 +3414,7 @@ get('/archive/:req/feed', function ($req) {
         $timestamp = $req;
     }
     
-    $data = new stdClass;
+    $data = new \stdClass;
     $data->title = $timestamp;
     $data->url = site_url() . 'archive/' . $req;
     $data->body = i18n('Archive_page_for') . ' ' . $timestamp . ' ' . i18n('by') . ' ' . blog_title();
@@ -3371,7 +3443,7 @@ get('/search/:keyword', function ($keyword) {
     $posts = get_keyword($keyword, $page, $perpage);
     $total = keyword_count($keyword);
 
-    $tsearch = new stdClass;
+    $tsearch = new \stdClass;
     $tsearch->title = $keyword;
     $tsearch->url = site_url() . 'search/' . strtolower($keyword);
     $tsearch->count = $total;
@@ -3432,7 +3504,7 @@ get('/search/:keyword/feed', function ($keyword) {
     
     $posts = get_keyword($keyword, 1, config('rss.count'));
 
-    $data = new stdClass;
+    $data = new \stdClass;
     $data->title = $keyword;
     $data->url = site_url() . 'search/' . strtolower($keyword);
     $data->body = i18n('Search_results_for') . ' ' . $keyword . ' ' . i18n('by') . ' ' . blog_title();
@@ -3510,7 +3582,7 @@ get('/post/:name', function ($name) {
         $current = $post['current'];
     }
 
-    $author = new stdClass;
+    $author = new \stdClass;
     $author->url = $current->authorUrl;
     $author->name = $current->authorName;
     $author->description = $current->authorDescription;
@@ -4689,7 +4761,7 @@ get('/:year/:month/:name', function ($year, $month, $name) {
         $current = $post['current'];
     }
 
-    $author = new stdClass;
+    $author = new \stdClass;
     $author->url = $current->authorUrl;
     $author->name = $current->authorName;
     $author->description = $current->authorDescription;

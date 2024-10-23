@@ -1,4 +1,5 @@
 <?php
+namespace myHTMLy;
 
 class Plugin_Yandex_Metrika extends Plugin
 {

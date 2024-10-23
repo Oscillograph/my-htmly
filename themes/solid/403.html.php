@@ -1,4 +1,4 @@
-<?php if (!defined('HTMLY')) die('HTMLy'); ?>
+<?php namespace myHTMLy; if (!defined('HTMLY')) die('HTMLy'); ?>
 <article class="page type-page hentry">
     <header class="entry-header">
         <h1 class="entry-title"><span>403 -- доступ к этому разделу сайта запрещён</span></h1>

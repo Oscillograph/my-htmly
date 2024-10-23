@@ -1,4 +1,6 @@
 <?php
+namespace myHTMLy;
+
 if (!defined('HTMLY')) die('HTMLy');
 
 //use \Michelf\MarkdownExtra;
@@ -109,7 +111,7 @@ function get_draft_pages()
                 $_draftPage[] = pathinfo($file);
             }
         }
-        usort($_draftPage, "sortfile_a");
+        usort($_draftPage, "myHTMLy\sortfile_a");
     }
     return $_draftPage;
 }
@@ -126,7 +128,7 @@ function get_draft_subpages($static = null)
                 $_draftSubpage[] = pathinfo($file);
             }
         }
-        usort($_draftSubpage, "sortfile_a");
+        usort($_draftSubpage, "myHTMLy\sortfile_a");
     }
     if ($static != null) {
         $stringLen = strlen($static);
@@ -232,7 +234,7 @@ function scan_images() {
                 $_images[] = pathinfo($file);
             }
         }
-        usort($_images, "sortfile_d");
+        usort($_images, "myHTMLy\sortfile_d");
     }
     return $_images;
 }
@@ -284,7 +286,7 @@ function rebuilt_cache($type = null)
             }
         }
     }
-    usort($posts_cache, "sortfile_d");
+    usort($posts_cache, "myHTMLy\sortfile_d");
     $posts_string = serialize($posts_cache);
     file_put_contents('cache/index/index-posts.txt', print_r($posts_string, true), LOCK_EX);   
 
@@ -298,7 +300,7 @@ function rebuilt_cache($type = null)
             $ctmp[] = $ss[3];
         }
     }
-    usort($scheduled_cache, "sortfile_d");
+    usort($scheduled_cache, "myHTMLy\sortfile_d");
     $scheduled_string = serialize($scheduled_cache);
     file_put_contents('cache/index/index-scheduled.txt', print_r($scheduled_string, true), LOCK_EX);
     
@@ -312,7 +314,7 @@ function rebuilt_cache($type = null)
             $ctmp[] = $dd[3];
         }
     }
-    usort($draft_cache, "sortfile_d");
+    usort($draft_cache, "myHTMLy\sortfile_d");
     $draft_string = serialize($draft_cache);
     file_put_contents('cache/index/index-draft.txt', print_r($draft_string, true), LOCK_EX);
     
@@ -325,7 +327,7 @@ function rebuilt_cache($type = null)
             $ctmp[] = pathinfo($file, PATHINFO_FILENAME);            
         }
     }
-    usort($category_cache, "sortfile_a");
+    usort($category_cache, "myHTMLy\sortfile_a");
     $category_string = serialize($category_cache);
     file_put_contents('cache/index/index-category-files.txt', print_r($category_string, true), LOCK_EX);
     
@@ -345,7 +347,7 @@ function rebuilt_cache($type = null)
             }
         }
     }
-    usort($page_cache, "sortfile_a");
+    usort($page_cache, "myHTMLy\sortfile_a");
     $page_string = serialize($page_cache);
     file_put_contents('cache/index/index-pages.txt', print_r($page_string, true), LOCK_EX);
 
@@ -359,7 +361,7 @@ function rebuilt_cache($type = null)
             }
         }
     }
-    usort($subpage_cache, "sortfile_a");
+    usort($subpage_cache, "myHTMLy\sortfile_a");
     $subpage_string = serialize($subpage_cache);
     file_put_contents('cache/index/index-subpages.txt', print_r($subpage_string, true), LOCK_EX);
 
@@ -371,7 +373,7 @@ function rebuilt_cache($type = null)
             $author_cache[] = pathinfo($file);
         }
     }
-    usort($author_cache, "sortfile_a");
+    usort($author_cache, "myHTMLy\sortfile_a");
     $author_string = serialize($author_cache);
     file_put_contents('cache/index/index-author.txt', print_r($author_string, true), LOCK_EX);
 
@@ -410,7 +412,7 @@ function get_posts($posts, $page = 1, $perpage = 0)
 
     foreach ($posts as $index => $v) {
 
-        $post = new stdClass;
+        $post = new \stdClass;
 
         $filepath = $v['dirname'] . '/' . $v['basename'];
 
@@ -459,7 +461,7 @@ function get_posts($posts, $page = 1, $perpage = 0)
         $post->type = $type;
         $dt = str_replace($dirname, '', $arr[0]);
         $t = str_replace('-', '', $dt);
-        $time = new DateTime($t);
+        $time = new \DateTime($t);
         $timestamp = $time->format("Y-m-d H:i:s");
 
         // The post date
@@ -590,7 +592,7 @@ function get_pages($pages, $page = 1, $perpage = 0)
     $pages = array_slice($pages, ($page - 1) * $perpage, $perpage);
     
     foreach ($pages as $index => $v) {
-        $post = new stdClass;
+        $post = new \stdClass;
 
         // The static page URL
         $fn = explode('.', $v['filename']);
@@ -671,7 +673,7 @@ function get_subpages($sub_pages, $page = 1, $perpage = 0)
     
     foreach ($sub_pages as $index => $v) {
         
-        $post = new stdClass;
+        $post = new \stdClass;
         
         $fd = str_replace(dirname($v['dirname']) . '/', '', $v['dirname']);
         
@@ -971,7 +973,7 @@ function read_category_info($category)
         foreach ($cFiles as $index => $v) {
             if (stripos($v['basename'], $category . '.md') !== false) {
 
-                $desc = new stdClass;
+                $desc = new \stdClass;
 
                 // The filename
                 $filename = $v['dirname'] . '/' . $v['basename'];
@@ -1016,7 +1018,7 @@ function read_category_info($category)
 function default_category($category = null)
 {
     $tmp = array();
-    $desc = new stdClass;
+    $desc = new \stdClass;
 
     if (is_null($category) || $category == 'uncategorized') {
         $desc->title = i18n("Uncategorized");
@@ -1201,7 +1203,7 @@ function get_author($name)
 
         foreach ($names as $index => $v) {
 
-            $author = new stdClass;
+            $author = new \stdClass;
 
             // dirname string
             $dirname = $v['dirname'];
@@ -1257,7 +1259,7 @@ function get_author($name)
 function default_profile($name)
 {
     $tmp = array();
-    $author = new stdClass;
+    $author = new \stdClass;
 
     $author->name = $name;
     $author->title = $name;
@@ -1275,7 +1277,7 @@ function default_profile($name)
 // Return frontpage content
 function get_frontpage()
 {
-    $front = new stdClass;
+    $front = new \stdClass;
 
     $filename = 'content/data/frontpage/frontpage.md';
 
@@ -1610,13 +1612,17 @@ function recent_type($type, $count = null, $custom = null)
         $posts = unserialize(file_get_contents($filename));
         if (count($posts) < $count) {
             $posts = get_type($type, 1, $count);
+            if (!empty($posts)) {
+                $tmp = serialize($posts);
+                file_put_contents($filename, print_r($tmp, true), LOCK_EX);
+            }
+        }
+    } else {
+        $posts = get_type($type, 1, $count);
+        if (!empty($posts)) {
             $tmp = serialize($posts);
             file_put_contents($filename, print_r($tmp, true), LOCK_EX);
         }
-    } else {
-       $posts = get_type($type, 1, $count);
-       $tmp = serialize($posts);
-       file_put_contents($filename, print_r($tmp, true), LOCK_EX);
     }
 
     if (!empty($custom)) {
@@ -1668,13 +1674,17 @@ function recent_tag($tag, $count = null, $custom = null)
         $posts = unserialize(file_get_contents($filename));
         if (count($posts) < $count) {
             $posts = get_tag($tag, 1, $count);
+            if (!empty($posts)) {
+                $tmp = serialize($posts);
+                file_put_contents($filename, print_r($tmp, true), LOCK_EX);
+            }
+        }
+    } else {
+        $posts = get_tag($tag, 1, $count);
+        if (!empty($posts)) {
             $tmp = serialize($posts);
             file_put_contents($filename, print_r($tmp, true), LOCK_EX);
         }
-    } else {
-       $posts = get_tag($tag, 1, $count);
-       $tmp = serialize($posts);
-       file_put_contents($filename, print_r($tmp, true), LOCK_EX);
     }
 
     if (!empty($custom)) {
@@ -2341,7 +2351,7 @@ function shorten($string = null, $char = null)
     }
     $string = str_replace('<span class="details">'. config('toc.label') .'</span>', '', $string);
     libxml_use_internal_errors(true);
-    $dom = new DOMDocument();
+    $dom = new \DOMDocument();
     $dom->loadHTML('<meta charset="utf8">' . $string);
     $tags_to_remove = array('script', 'style');
     foreach($tags_to_remove as $tag){
@@ -2374,7 +2384,7 @@ function get_thumbnail($text, $url = null)
 
             libxml_use_internal_errors(true);
             $default = config('default.thumbnail');
-            $dom = new DOMDocument();
+            $dom = new \DOMDocument();
             $dom->loadHtml('<meta charset="utf8">' . $text);
             $imgTags = $dom->getElementsByTagName('img');
             $vidTags = $dom->getElementsByTagName('iframe');
@@ -2417,7 +2427,7 @@ function get_thumbnail($text, $url = null)
 function get_image($text, $width = null, $height = null)
 {
     libxml_use_internal_errors(true);
-    $dom = new DOMDocument();
+    $dom = new \DOMDocument();
     $dom->loadHtml('<meta charset="utf8">' . $text);
     $imgTags = $dom->getElementsByTagName('img');
     $vidTags = $dom->getElementsByTagName('iframe');
@@ -2654,7 +2664,7 @@ EOF;
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  gtag('js', new \Date());
   gtag('config', '{$gtag}');
 </script>
 EOF;
@@ -2769,10 +2779,10 @@ function menu($class = null)
         } else {
             $html = parseNodes($nodes, null, $class);
             libxml_use_internal_errors(true);
-            $doc = new DOMDocument();
+            $doc = new \DOMDocument();
             $doc->loadHTML('<meta charset="utf8">' . $html);
 
-            $finder = new DOMXPath($doc);
+            $finder = new \DOMXPath($doc);
             $elements = $finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' dropdown-menu ')]");
 
             // loop through all <ul> with dropdown-menu class
@@ -3000,8 +3010,8 @@ function not_found($request = null)
 // Turn an array of posts into an RSS feed
 function generate_rss($posts, $data = null)
 {
-    $feed = new Feed();
-    $channel = new Channel();
+    $feed = new \Feed();
+    $channel = new \Channel();
     $rssLength = config('rss.char');
     $data = $data;
     
@@ -3027,7 +3037,7 @@ function generate_rss($posts, $data = null)
                 $body = $p->body;
             }
 
-            $item = new Item();
+            $item = new \Item();
             $item
                 ->category(strip_tags($p->category));
             $item
@@ -3064,7 +3074,7 @@ function sitemap_post_path($posts, $page = 1, $perpage = 0)
 
     foreach ($posts as $index => $v) {
 
-        $post = new stdClass;
+        $post = new \stdClass;
 
         $filepath = $v['dirname'] . '/' . $v['basename'];
 
@@ -3082,7 +3092,7 @@ function sitemap_post_path($posts, $page = 1, $perpage = 0)
 
         $dt = str_replace($dirname, '', $arr[0]);
         $t = str_replace('-', '', $dt);
-        $time = new DateTime($t);
+        $time = new \DateTime($t);
         $timestamp = $time->format("Y-m-d H:i:s");
 
         // The post date
@@ -3122,7 +3132,7 @@ function sitemap_page_path()
 
         foreach ($posts as $index => $v) {
 
-            $post = new stdClass;
+            $post = new \stdClass;
             
             $fn = explode('.', $v['filename']);
             
@@ -3783,7 +3793,7 @@ function replace_href($string, $tag, $class, $url)
     libxml_use_internal_errors(true);
 
     // Load the HTML in DOM
-    $doc = new DOMDocument();
+    $doc = new \DOMDocument();
     $doc->loadHTML('<meta charset="utf8">' . $string);
     // Then select all anchor tags
     $all_anchor_tags = $doc->getElementsByTagName($tag);
@@ -3808,7 +3818,7 @@ function format_date($date, $dateFormat = null)
     if (extension_loaded('intl')) {
         $format_map = array('s' => 'ss', 'i' => 'mm', 'H' => 'HH', 'G' => 'H', 'd' => 'dd', 'j' => 'd', 'D' => 'EE', 'l' => 'EEEE', 'm' => 'MM', 'M' => 'MMM', 'F' => 'MMMM', 'Y' => 'yyyy');
         $intlFormat = strtr($dateFormat, $format_map);
-        $formatter = new IntlDateFormatter(locale_language(), IntlDateFormatter::NONE, IntlDateFormatter::NONE, config('timezone'), IntlDateFormatter::GREGORIAN, $intlFormat);
+        $formatter = new \IntlDateFormatter(locale_language(), \IntlDateFormatter::NONE, \IntlDateFormatter::NONE, config('timezone'), \IntlDateFormatter::GREGORIAN, $intlFormat);
         return $formatter->format($date); 
     } else {
         return date($dateFormat, $date);
@@ -3825,10 +3835,32 @@ function publish_scheduled()
             $old =  $v['dirname'] . '/' . $v['basename'];
             $new = dirname($v['dirname']) . '/' . $v['basename'];
             $t = str_replace('-', '', $str[0]);
-            $time = new DateTime($t);
+            $time = new \DateTime($t);
             $timestamp = $time->format("Y m d H:i:s");
             if (date('Y m d H:i:s') >= $timestamp) {
                 rename($old, $new);
+				$filepath = $new;
+				$content = file_get_contents($filepath);
+				$description = get_content_tag("d", $content, get_description($content));
+
+				$arr = explode('_', $v['basename']);
+				$url = site_url() . 'post/' . str_replace('.md', '', $arr[2]);
+				$dt = str_replace($v['dirname'], '', $arr[0]);
+
+				$title = get_content_tag('t', $content, 'Без названия');
+				$date = strtotime($timestamp);
+				$url = '';
+
+				$permalink = config('permalink.type');
+				if ($permalink == 'post') {
+					$url = site_url() . 'post/' . str_replace('.md', '', $arr[2]);
+				} else {
+					$url = site_url() . date('Y/m', $date) . '/' . str_replace('.md', '', $arr[2]);
+				}
+
+				export_news_to_socials($title, $description, site_url().$url, $content);
+				file_put_contents($filepath);
+
                 rebuilt_cache('all');
                 clear_cache();
             }
@@ -4047,4 +4079,128 @@ function generate_meta($type = null, $object = null)
     }
     
     return $tags;
+}
+
+// Exporting news to socials
+// Send message to Telegram
+function Telegram_SendMessage($message_html)
+{
+	$url = 'https://api.telegram.org/bot'.config('export.telegram.token').'/sendMessage';
+	$post = 'chat_id='.$TG_CHANNEL_ID.'&text='.config('export.telegram.channelid').'&parse_mode=HTML';
+
+	$curl_channel = curl_init();
+	curl_setopt($curl_channel, CURLOPT_URL, $url);
+	curl_setopt($curl_channel, CURLOPT_POSTFIELDS, $post);
+	curl_setopt($curl_channel, CURLOPT_HEADER, false);
+	curl_setopt($curl_channel, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($curl_channel, CURLOPT_SSL_VERIFYPEER, false);
+	$result = curl_exec($curl_channel);
+	curl_close($curl_channel);
+
+	return $result;
+}
+
+function PhpBB_SendMessage($title = 'Test', $message = 'Test')
+{
+	global $db, $auth, $user, $config, $phpEx, $phpbb_root_path, $phpbb_container, $phpbb_dispatcher, $phpbb_log, $request, $table_prefix;
+
+	// Configuration
+	define('IN_PHPBB', true);
+	$user_id = intval(config('export.phpbb.userid')); 
+	$forum_id = intval(config('export.phpbb.forumid'));
+	$phpbb_root_path = config('export.phpbb.serverpath');
+
+	$phpEx = substr(strrchr(__FILE__, '.'), 1);
+	include_once($phpbb_root_path . 'common.' . $phpEx);
+	include_once($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
+	include_once($phpbb_root_path . 'includes/message_parser.' . $phpEx);
+
+	// Start phpBB session management
+	$user->session_begin();
+	$auth->acl($user->data);
+	$user->setup('');
+
+	// Fetch user information
+	$sql = 'SELECT * FROM ' . USERS_TABLE . ' WHERE user_id = ' . $user_id;
+	$result = $db->sql_query($sql);
+	$user_data = $db->sql_fetchrow($result);
+	$db->sql_freeresult($result);
+
+	if (!$user_data) {
+		return 'Error: PhpBB user not found.';
+	}
+
+	// Emulate the user for posting
+	$user->data = array_merge($user->data, $user_data);
+
+	// Create the post data array
+	$data = [
+		'forum_id'          => $forum_id,
+		'topic_title'       => $title,
+		'topic_first_post_id' => 0,
+		'topic_last_post_id'  => 0,
+		'topic_time_limit'    => 0,
+		'topic_replies_real'  => 0,
+		'topic_status'        => ITEM_UNLOCKED,
+		'icon_id'             => 0,
+		'enable_bbcode'       => true,
+		'enable_smilies'      => true,
+		'enable_urls'         => true,
+		'enable_sig'          => true,
+		'message'             => $message,
+		'message_md5'         => md5($message),
+		'bbcode_bitfield'     => '',
+		'bbcode_uid'          => '',
+		'post_edit_locked'    => 0,
+		'enable_indexing'     => true,
+		'notify_set'          => false,
+		'notify'              => false,
+		'post_time'           => time(),
+		'poster_id'           => $user_id,
+		'forum_name'          => '',
+		'force_approved_state'    => true, // Set to true to force the post to be approved
+		'force_visibility'            => true, // Set to true to force the post to be visible
+	];
+
+	// Parse the message
+	$message_parser = new \parse_message($message);
+	$message_parser->parse(true, true, true, true, false, true, true);
+
+	// Update data with parsed text
+	$data['message']         = $message_parser->message;
+	$data['bbcode_bitfield'] = $message_parser->bbcode_bitfield;
+	$data['bbcode_uid']      = $message_parser->bbcode_uid;
+
+	// Empty poll array
+	$poll = array();
+
+	// Submit the post
+	return \submit_post('post', $title, '', POST_NORMAL, $poll, $data);
+}
+
+function export_news_to_socials($title, $description, $url, &$content)
+{
+	if (config('export.phpbb.enable') == 'true')
+	{
+		$thread_url = PhpBB_SendMessage($title, 'Тема для обсуждения заметки "[b]'.$title.'[/b]":
+[i]' . $description . '[/i]
+
+[url="'.$url.'"]Ссылка на заметку[/url].');
+
+		$viewtopic_pattern = '/viewtopic\.php\?t=([0-9]+)/i';
+		$viewtopic_result = preg_match($viewtopic_pattern, $thread_url);
+		if ($viewtopic_result) {
+			$viewtopic_result = trim($viewtopic_result);
+		}
+
+		$content .= '
+<!--phpbb '.$viewtopic_result.' phpbb-->';
+	}
+
+	if (config('export.telegram.enable') == 'true')
+	{
+		Telegram_SendMessage( '<b>'.$title.'</b>
+'.$description . "
+<a href='".$url."'>Читать полный текст</a>.");
+	}
 }

@@ -1,4 +1,4 @@
-<?php if (!defined('HTMLY')) die('HTMLy'); ?>
+<?php namespace myHTMLy; if (!defined('HTMLY')) die('HTMLy'); ?>
 <h2><?php echo i18n('General_Settings')?></h2>
 <br>
 <?php if (!extension_loaded('intl')) { ?>
@@ -12,6 +12,7 @@ Please install and enable the INTL extension to format the date format to your l
     <a class="nav-item nav-link active" id="nav-general-tab" href="<?php echo site_url();?>admin/config"><?php echo i18n('General');?></a>
     <a class="nav-item nav-link" id="nav-profile-tab" href="<?php echo site_url();?>admin/config/reading"><?php echo i18n('Reading');?></a>
     <a class="nav-item nav-link" id="nav-writing-tab" href="<?php echo site_url();?>admin/config/writing"><?php echo i18n('Writing');?></a>
+    <a class="nav-item nav-link" id="nav-export-tab" href="<?php echo site_url();?>admin/config/export"><?php echo i18n('Export');?></a>
     <a class="nav-item nav-link" id="nav-widget-tab" href="<?php echo site_url();?>admin/config/widget"><?php echo i18n('Widget');?></a>
     <a class="nav-item nav-link" id="nav-metatags-tab" href="<?php echo site_url();?>admin/config/metatags"><?php echo i18n('Metatags');?></a>
     <a class="nav-item nav-link" id="nav-security-tab" href="<?php echo site_url();?>admin/config/security"><?php echo i18n('Security');?></a>
@@ -76,7 +77,7 @@ Please install and enable the INTL extension to format the date format to your l
     </div>
   </div>
   <div class="form-group row">
-  <?php $time = new DateTime('NOW'); $date = $time->format("Y-m-d H:i:s");?>
+  <?php $time = new \DateTime('NOW'); $date = $time->format("Y-m-d H:i:s");?>
     <label class="col-sm-2 col-form-label"><?php echo i18n('Date_Format');?></label>
     <div class="col-sm-10">
       <div class="col-sm-10">

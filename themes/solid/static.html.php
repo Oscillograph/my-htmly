@@ -1,6 +1,7 @@
-<?php if (!defined('HTMLY')) die('HTMLy'); ?>
+<?php  namespace myHTMLy; if (!defined('HTMLY')) die('HTMLy'); ?>
 
 <?php if (login()) { echo tab($p); } ?>
+
 <span class="paper-title"><?php echo $p->title;?></span>
 <!-- .entry-header -->
 
@@ -11,6 +12,33 @@
 
 <p>&nbsp;</p>
 <hr>
+
+<?php 
+	global $widgets_registry;
+	if($widgets_registry)
+	{
+		call_widgets($p);
+	}
+?>
+
+<?php
+if (isset($is_front))
+{
+	$posts = get_posts(null, 1, 10);
+	echo '[box=Свежее в блоге]';
+	foreach ($posts as $post)
+	{
+		echo '(' . date('Y/m/d', $post->date) . ') ' . '<b>' . $post->categoryTitle . '</b><br>';
+		echo '<a href="' . $post->url . '">'. $post->title .'<br>' . '</a>';
+	}
+	echo '[/box]';
+
+	?>
+<p>&nbsp;</p>
+<hr>
+	<?php
+}
+?>
 
 <!--
 <nav role="navigation" class="navigation post-navigation">

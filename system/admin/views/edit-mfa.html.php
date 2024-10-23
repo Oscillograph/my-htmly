@@ -1,4 +1,4 @@
-<?php if (!defined('HTMLY')) die('HTMLy'); ?>
+<?php namespace myHTMLy; if (!defined('HTMLY')) die('HTMLy'); ?>
 <?php
 if (isset($_SESSION[site_url()]['user'])) {
     $user = $_SESSION[site_url()]['user'];

@@ -1,4 +1,4 @@
-<?php if (!defined('HTMLY')) die('HTMLy'); ?>
+<?php namespace myHTMLy; if (!defined('HTMLY')) die('HTMLy'); ?>
 <article class="post <?php if ($p->type == 'post') {echo 'format-standard';} else { echo 'format-' . $p->type;} ?> hentry single">
 
     <header class="entry-header">
@@ -66,6 +66,23 @@
             
         </div>
     <?php endif; ?>
+
+<?php
+if (config('export.phpbb.enable'))
+{
+	$phpbb_link = get_content_tag('phpbb', $p->body);
+	if (strlen($phpbb_link) > 10)
+	{
+		$phpbb_link = config('export.phpbb.url').$phpbb_link;
+?>
+<hr>
+<div class="nav-links">
+	<a href="<?php echo $phpbb_link; ?>"><span class="post-title"><?php echo i18n('Discuss_on_forum'); ?></span></a>
+</div>
+<?php
+	}
+}
+?>
 
 <nav role="navigation" class="navigation post-navigation">
 	<p> &nbsp; </p>
