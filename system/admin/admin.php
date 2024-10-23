@@ -264,7 +264,7 @@ function add_content($title, $tag, $url, $content, $user, $draft, $category, $ty
         if (empty($draft)) {
             if (date('Y-m-d-H-i-s') >= $post_date) {
                 $redirect = site_url() . 'admin/mine';
-                export_news_to_socials($title, $description, site_url().((config('permalink.type') == 'post') ? 'post/' : date('Y/m', strtotime($dateTime)) ).'/'.$post_url, $post_content);
+                export_news_to_socials($title, $description, site_url().((config('permalink.type') == 'post') ? 'post' : date('Y/m', strtotime($dateTime)) ).'/'.$post_url, $post_content);
                 file_put_contents($dir . $filename, print_r($post_content, true), LOCK_EX);
             } else {
                 $redirect = site_url() . 'admin/scheduled';
