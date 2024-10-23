@@ -4086,7 +4086,7 @@ function generate_meta($type = null, $object = null)
 function Telegram_SendMessage($message_html)
 {
 	$url = 'https://api.telegram.org/bot'.config('export.telegram.token').'/sendMessage';
-	$post = 'chat_id='.$TG_CHANNEL_ID.'&text='.config('export.telegram.channelid').'&parse_mode=HTML';
+	$post = 'chat_id='.config('export.telegram.channelid').'&text='.$message_html.'&parse_mode=HTML';
 
 	$curl_channel = curl_init();
 	curl_setopt($curl_channel, CURLOPT_URL, $url);
@@ -4187,14 +4187,15 @@ function export_news_to_socials($title, $description, $url, &$content)
 
 [url="'.$url.'"]Ссылка на заметку[/url].');
 
-		$viewtopic_pattern = '/viewtopic\.php\?t=([0-9]+)/i';
-		$viewtopic_result = preg_match($viewtopic_pattern, $thread_url);
+		$viewtopic_pattern = '/viewtopic\.php\?t=[0-9]+/i';
+		$viewtopic_result = [];
+		preg_match($viewtopic_pattern, $thread_url, $viewtopic_result);
 		if ($viewtopic_result) {
-			$viewtopic_result = trim($viewtopic_result);
+			$viewtopic_result[0] = trim($viewtopic_result[0]);
 		}
 
 		$content .= '
-<!--phpbb '.$viewtopic_result.' phpbb-->';
+<!--phpbb '.$viewtopic_result[0].' phpbb-->';
 	}
 
 	if (config('export.telegram.enable') == 'true')

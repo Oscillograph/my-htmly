@@ -68,7 +68,7 @@
     <?php endif; ?>
 
 <?php
-if (config('export.phpbb.enable'))
+if (config('export.phpbb.enable') == 'true')
 {
 	$phpbb_link = get_content_tag('phpbb', $p->body);
 	if (strlen($phpbb_link) > 10)
