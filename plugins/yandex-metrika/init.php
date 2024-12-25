@@ -35,7 +35,6 @@ class Plugin_Yandex_Metrika extends Plugin
 
 	public function frontend_theme_header()
 	{
-		include PLUGINS_BASE_DIR . 'yandex-metrika/counter.txt';
 	}
 
 	public function frontend_theme_content()
@@ -44,6 +43,7 @@ class Plugin_Yandex_Metrika extends Plugin
 
 	public function frontend_theme_footer()
 	{
+		include PLUGINS_BASE_DIR . 'yandex-metrika/counter.txt';
 	}
 
 	public function frontend_theme_end()

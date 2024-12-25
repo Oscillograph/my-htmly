@@ -41,22 +41,22 @@
 					</li>
 					<!--
 					<li class='nav-item'>
-						<a href='#'>Радиовидение</a>
+						<a href='radiovision'>Радиовидение</a>
 						<ul class='submenu'>
 							<li class='nav-item'>
-								<a href='#'>Разное</a>
+								<a href='radiovision/misc'>Разное</a>
 							</li>
 							<li class='nav-item'>
-								<a href='#'>Моделирование</a>
+								<a href='radiovision/modeling'>Моделирование</a>
 							</li>
 							<li class='nav-item'>
-								<a href='#'>Формирование РЛИ</a>
+								<a href='radiovision/radar-imaging'>Формирование РЛИ</a>
 							</li>
 							<li class='nav-item'>
-								<a href='#'>Компенсация движения</a>
+								<a href='radiovision/motion-compensation'>Компенсация движения</a>
 							</li>
 							<li class='nav-item'>
-								<a href='#'>Автофокусировка</a>
+								<a href='radiovision/autofocus'>Автофокусировка</a>
 							</li>
 						</ul>
 					</li>
@@ -69,7 +69,7 @@
 					</li>
 					<!--
 					<li class='nav-item'>
-						<a href='forum' class='headbar-item'>Сообщество</a>
+						<a href='https://forum.kvk-tech.ru' class='headbar-item'>Сообщество</a>
 					</li>
 					-->
 				</ul>
@@ -124,8 +124,11 @@
 			</div>
 
 		</div>
+
+<?php plugins_frontend_theme_footer(); ?>
+
 	</body>
 </html>
 
-<?php plugins_frontend_theme_footer(); ?>
+<?php plugins_frontend_theme_end(); ?>
 <?php if (analytics()): ?><?php echo analytics() ?><?php endif; ?>

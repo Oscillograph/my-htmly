@@ -3010,8 +3010,8 @@ function not_found($request = null)
 // Turn an array of posts into an RSS feed
 function generate_rss($posts, $data = null)
 {
-    $feed = new \Feed();
-    $channel = new \Channel();
+    $feed = new Feed();
+    $channel = new Channel();
     $rssLength = config('rss.char');
     $data = $data;
     
@@ -3037,7 +3037,7 @@ function generate_rss($posts, $data = null)
                 $body = $p->body;
             }
 
-            $item = new \Item();
+            $item = new Item();
             $item
                 ->category(strip_tags($p->category));
             $item
