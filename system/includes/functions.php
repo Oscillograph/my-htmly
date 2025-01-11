@@ -4086,7 +4086,7 @@ function generate_meta($type = null, $object = null)
 function Telegram_SendMessage($message_html)
 {
 	$url = 'https://api.telegram.org/bot'.config('export.telegram.token').'/sendMessage';
-	$post = 'chat_id='.config('export.telegram.channelid').'&text='.$message_html.'&parse_mode=HTML';
+	$post = 'chat_id='.config('export.telegram.channelid').'&text='.urlencode($message_html).'&parse_mode=HTML';
 
 	$curl_channel = curl_init();
 	curl_setopt($curl_channel, CURLOPT_URL, $url);
